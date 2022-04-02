@@ -769,7 +769,7 @@ class _BetterPlayerCupertinoControlsState
       future: _betterPlayerController!.isPictureInPictureSupported(),
       builder: (context, snapshot) {
         final isPipSupported = snapshot.data ?? false;
-        if (isPipSupported &&
+        if ((_controlsConfiguration.forceEnablePip || isPipSupported) &&
             _betterPlayerController!.betterPlayerGlobalKey != null) {
           return GestureDetector(
             onTap: () {

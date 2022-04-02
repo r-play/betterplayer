@@ -110,6 +110,9 @@ class BetterPlayerControlsConfiguration {
   ///Flag used to show/hide PiP mode
   final bool enablePip;
 
+  ///Flag used to show/hide PiP mode
+  final bool forceEnablePip;
+
   ///Flag used to enable/disable retry feature
   final bool enableRetry;
 
@@ -197,6 +200,7 @@ class BetterPlayerControlsConfiguration {
     this.enableSubtitles = true,
     this.enableQualities = true,
     this.enablePip = true,
+    this.forceEnablePip = true,
     this.enableRetry = true,
     this.overflowMenuCustomItems = const [],
     this.overflowMenuIcon = Icons.more_vert_outlined,
