@@ -775,6 +775,7 @@ class _BetterPlayerCupertinoControlsState
             onTap: () {
               betterPlayerController!.enablePictureInPicture(
                   betterPlayerController!.betterPlayerGlobalKey!);
+              _controlsConfiguration.onEnablePipPressed?.call();
             },
             child: AnimatedOpacity(
               opacity: controlsNotVisible ? 0.0 : 1.0,
