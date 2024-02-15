@@ -110,6 +110,9 @@ class BetterPlayerControlsConfiguration {
   ///Flag used to show/hide PiP mode
   final bool enablePip;
 
+  ///Flag used to show/hide PiP mode
+  final bool forceEnablePip;
+
   ///Flag used to enable/disable retry feature
   final bool enableRetry;
 
@@ -161,6 +164,8 @@ class BetterPlayerControlsConfiguration {
   ///Color of text in bottom modal sheet used for overflow menu items.
   final Color overflowModalTextColor;
 
+  final VoidCallback? onEnablePipPressed;
+
   const BetterPlayerControlsConfiguration({
     this.controlBarColor = Colors.black87,
     this.textColor = Colors.white,
@@ -197,6 +202,7 @@ class BetterPlayerControlsConfiguration {
     this.enableSubtitles = true,
     this.enableQualities = true,
     this.enablePip = true,
+    this.forceEnablePip = true,
     this.enableRetry = true,
     this.overflowMenuCustomItems = const [],
     this.overflowMenuIcon = Icons.more_vert_outlined,
@@ -213,6 +219,7 @@ class BetterPlayerControlsConfiguration {
     this.backgroundColor = Colors.black,
     this.overflowModalColor = Colors.white,
     this.overflowModalTextColor = Colors.black,
+    this.onEnablePipPressed,
   });
 
   factory BetterPlayerControlsConfiguration.white() {

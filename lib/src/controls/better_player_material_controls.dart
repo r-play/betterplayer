@@ -218,6 +218,7 @@ class _BetterPlayerMaterialControlsState
       onTap: () {
         betterPlayerController!.enablePictureInPicture(
             betterPlayerController!.betterPlayerGlobalKey!);
+        _controlsConfiguration.onEnablePipPressed?.call();
       },
       child: Padding(
         padding: const EdgeInsets.all(8),
