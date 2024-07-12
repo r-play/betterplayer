@@ -556,11 +556,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         _playerRate = speed;
         result(nil);
     } else {
-        if (speed > 1.0) {
-            result([FlutterError errorWithCode:@"unsupported_fast_forward"
-                                       message:@"This video cannot be played fast forward"
-                                       details:nil]);
-        } else {
+        if (speed <= 1.0) {
             result([FlutterError errorWithCode:@"unsupported_slow_forward"
                                        message:@"This video cannot be played slow forward"
                                        details:nil]);
@@ -568,7 +564,10 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 
     if (_isPlaying){
-        _player.rate = _playerRate;
+        if (@available(iOS 16, *)) {
+            _player.defaultRate = speed;
+        }
+        _player.rate = speed;
     }
 }
 
