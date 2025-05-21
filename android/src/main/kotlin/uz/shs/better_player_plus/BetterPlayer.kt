@@ -106,7 +106,7 @@ internal class BetterPlayer(
             this.customDefaultLoadControl.maxBufferMs,
             this.customDefaultLoadControl.bufferForPlaybackMs,
             this.customDefaultLoadControl.bufferForPlaybackAfterRebufferMs
-        )
+        ).setPrioritizeTimeOverSizeThresholds(true)
         loadControl = loadBuilder.build()
         exoPlayer = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
@@ -401,6 +401,15 @@ internal class BetterPlayer(
         }
         val mediaItemBuilder = MediaItem.Builder()
         mediaItemBuilder.setUri(uri)
+        mediaItemBuilder.setLiveConfiguration(
+            MediaItem.LiveConfiguration.Builder()
+                .setTargetOffsetMs(500L)
+                .setMinOffsetMs(100L)
+                .setMaxOffsetMs(2000L)
+                .setMinPlaybackSpeed(0.9f)
+                .setMaxPlaybackSpeed(1.1f)
+                .build()
+        )
         if (!cacheKey.isNullOrEmpty()) {
             mediaItemBuilder.setCustomCacheKey(cacheKey)
         }
