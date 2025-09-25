@@ -14,8 +14,8 @@ class BetterPlayerMaterialVideoProgressBar extends StatefulWidget {
     this.onDragUpdate,
     this.onTapDown,
     Key? key,
-  })  : colors = colors ?? BetterPlayerProgressColors(),
-        super(key: key);
+  }) : colors = colors ?? BetterPlayerProgressColors(),
+       super(key: key);
 
   final VideoPlayerController? controller;
   final BetterPlayerController? betterPlayerController;
@@ -31,7 +31,8 @@ class BetterPlayerMaterialVideoProgressBar extends StatefulWidget {
   }
 }
 
-class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar> {
+class _VideoProgressBarState
+    extends State<BetterPlayerMaterialVideoProgressBar> {
   _VideoProgressBarState() {
     listener = () {
       if (mounted) setState(() {});
@@ -43,7 +44,8 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
 
   VideoPlayerController? get controller => widget.controller;
 
-  BetterPlayerController? get betterPlayerController => widget.betterPlayerController;
+  BetterPlayerController? get betterPlayerController =>
+      widget.betterPlayerController;
 
   bool shouldPlayAfterDragEnd = false;
   Duration? lastSeek;
@@ -64,8 +66,10 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
 
   @override
   Widget build(BuildContext context) {
-    final bool enableProgressBarDrag =
-        betterPlayerController!.betterPlayerConfiguration.controlsConfiguration.enableProgressBarDrag;
+    final bool enableProgressBarDrag = betterPlayerController!
+        .betterPlayerConfiguration
+        .controlsConfiguration
+        .enableProgressBarDrag;
 
     return GestureDetector(
       onHorizontalDragStart: (DragStartDetails details) {
@@ -124,10 +128,7 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
           width: MediaQuery.of(context).size.width,
           color: Colors.transparent,
           child: CustomPaint(
-            painter: _ProgressBarPainter(
-              _getValue(),
-              widget.colors,
-            ),
+            painter: _ProgressBarPainter(_getValue(), widget.colors),
           ),
         ),
       ),
@@ -210,11 +211,14 @@ class _ProgressBarPainter extends CustomPainter {
     if (!value.initialized) {
       return;
     }
-    double playedPartPercent = value.position.inMilliseconds / value.duration!.inMilliseconds;
+    double playedPartPercent =
+        value.position.inMilliseconds / value.duration!.inMilliseconds;
     if (playedPartPercent.isNaN) {
       playedPartPercent = 0;
     }
-    final double playedPart = playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
+    final double playedPart = playedPartPercent > 1
+        ? size.width
+        : playedPartPercent * size.width;
     for (final DurationRange range in value.buffered) {
       double start = range.startFraction(value.duration!) * size.width;
       if (start.isNaN) {
