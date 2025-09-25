@@ -5,14 +5,10 @@ class CustomControlsWidget extends StatefulWidget {
   final BetterPlayerController? controller;
   final Function(bool visbility)? onControlsVisibilityChanged;
 
-  const CustomControlsWidget({
-    Key? key,
-    this.controller,
-    this.onControlsVisibilityChanged,
-  }) : super(key: key);
+  const CustomControlsWidget({super.key, this.controller, this.onControlsVisibilityChanged});
 
   @override
-  _CustomControlsWidgetState createState() => _CustomControlsWidgetState();
+  State<CustomControlsWidget> createState() => _CustomControlsWidgetState();
 }
 
 class _CustomControlsWidgetState extends State<CustomControlsWidget> {
@@ -35,19 +31,18 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(
-                      widget.controller!.isFullScreen
-                          ? Icons.fullscreen_exit
-                          : Icons.fullscreen,
+                      widget.controller!.isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
                       color: Colors.white,
                       size: 28,
                     ),
                   ),
                 ),
                 onTap: () => setState(() {
-                  if (widget.controller!.isFullScreen)
+                  if (widget.controller!.isFullScreen) {
                     widget.controller!.exitFullScreen();
-                  else
+                  } else {
                     widget.controller!.enterFullScreen();
+                  }
                 }),
               ),
             ),
@@ -70,21 +65,11 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          Duration? videoDuration = await widget
-                              .controller!
-                              .videoPlayerController!
-                              .position;
+                          Duration? videoDuration = await widget.controller!.videoPlayerController!.position;
                           setState(() {
                             if (widget.controller!.isPlaying()!) {
-                              Duration rewindDuration = Duration(
-                                seconds: (videoDuration!.inSeconds - 2),
-                              );
-                              if (rewindDuration <
-                                  widget
-                                      .controller!
-                                      .videoPlayerController!
-                                      .value
-                                      .duration!) {
+                              Duration rewindDuration = Duration(seconds: (videoDuration!.inSeconds - 2));
+                              if (rewindDuration < widget.controller!.videoPlayerController!.value.duration!) {
                                 widget.controller!.seekTo(Duration(seconds: 0));
                               } else {
                                 widget.controller!.seekTo(rewindDuration);
@@ -97,36 +82,25 @@ class _CustomControlsWidgetState extends State<CustomControlsWidget> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            if (widget.controller!.isPlaying()!)
+                            if (widget.controller!.isPlaying()!) {
                               widget.controller!.pause();
-                            else
+                            } else {
                               widget.controller!.play();
+                            }
                           });
                         },
                         child: Icon(
-                          widget.controller!.isPlaying()!
-                              ? Icons.pause
-                              : Icons.play_arrow,
+                          widget.controller!.isPlaying()! ? Icons.pause : Icons.play_arrow,
                           color: Colors.white,
                         ),
                       ),
                       InkWell(
                         onTap: () async {
-                          Duration? videoDuration = await widget
-                              .controller!
-                              .videoPlayerController!
-                              .position;
+                          Duration? videoDuration = await widget.controller!.videoPlayerController!.position;
                           setState(() {
                             if (widget.controller!.isPlaying()!) {
-                              Duration forwardDuration = Duration(
-                                seconds: (videoDuration!.inSeconds + 2),
-                              );
-                              if (forwardDuration >
-                                  widget
-                                      .controller!
-                                      .videoPlayerController!
-                                      .value
-                                      .duration!) {
+                              Duration forwardDuration = Duration(seconds: (videoDuration!.inSeconds + 2));
+                              if (forwardDuration > widget.controller!.videoPlayerController!.value.duration!) {
                                 widget.controller!.seekTo(Duration(seconds: 0));
                                 widget.controller!.pause();
                               } else {

@@ -16,10 +16,7 @@ import 'package:better_player_plus/src/hls/hls_parser/util.dart';
 sealed class BetterPlayerHlsUtils {
   BetterPlayerHlsUtils._();
 
-  static Future<BetterPlayerAsmsDataHolder> parse(
-    String data,
-    String masterPlaylistUrl,
-  ) async {
+  static Future<BetterPlayerAsmsDataHolder> parse(String data, String masterPlaylistUrl) async {
     List<BetterPlayerAsmsTrack> tracks = [];
     List<BetterPlayerAsmsSubtitle> subtitles = [];
     List<BetterPlayerAsmsAudioTrack> audios = [];
@@ -35,35 +32,17 @@ sealed class BetterPlayerHlsUtils {
     } on Exception catch (exception) {
       BetterPlayerUtils.log('Exception on hls parse: $exception');
     }
-    return BetterPlayerAsmsDataHolder(
-      tracks: tracks,
-      audios: audios,
-      subtitles: subtitles,
-    );
+    return BetterPlayerAsmsDataHolder(tracks: tracks, audios: audios, subtitles: subtitles);
   }
 
-  static Future<List<BetterPlayerAsmsTrack>> parseTracks(
-    String data,
-    String masterPlaylistUrl,
-  ) async {
+  static Future<List<BetterPlayerAsmsTrack>> parseTracks(String data, String masterPlaylistUrl) async {
     final List<BetterPlayerAsmsTrack> tracks = [];
     try {
-      final parsedPlaylist = await HlsPlaylistParser.create().parseString(
-        Uri.parse(masterPlaylistUrl),
-        data,
-      );
+      final parsedPlaylist = await HlsPlaylistParser.create().parseString(Uri.parse(masterPlaylistUrl), data);
       if (parsedPlaylist is HlsMasterPlaylist) {
         for (final variant in parsedPlaylist.variants) {
           tracks.add(
-            BetterPlayerAsmsTrack(
-              '',
-              variant.format.width,
-              variant.format.height,
-              variant.format.bitrate,
-              0,
-              '',
-              '',
-            ),
+            BetterPlayerAsmsTrack('', variant.format.width, variant.format.height, variant.format.bitrate, 0, '', ''),
           );
         }
       }
@@ -78,16 +57,10 @@ sealed class BetterPlayerHlsUtils {
   }
 
   ///Parse subtitles from provided m3u8 url
-  static Future<List<BetterPlayerAsmsSubtitle>> parseSubtitles(
-    String data,
-    String masterPlaylistUrl,
-  ) async {
+  static Future<List<BetterPlayerAsmsSubtitle>> parseSubtitles(String data, String masterPlaylistUrl) async {
     final List<BetterPlayerAsmsSubtitle> subtitles = [];
     try {
-      final parsedPlaylist = await HlsPlaylistParser.create().parseString(
-        Uri.parse(masterPlaylistUrl),
-        data,
-      );
+      final parsedPlaylist = await HlsPlaylistParser.create().parseString(Uri.parse(masterPlaylistUrl), data);
 
       if (parsedPlaylist is HlsMasterPlaylist) {
         for (final Rendition element in parsedPlaylist.subtitles) {
@@ -110,22 +83,15 @@ sealed class BetterPlayerHlsUtils {
   ///to prevent massive load od video start. Segmented subtitles will have
   ///filled segments list which contains start, end and url of subtitles based
   ///on time in playlist.
-  static Future<BetterPlayerAsmsSubtitle?> _parseSubtitlesPlaylist(
-    Rendition rendition,
-  ) async {
+  static Future<BetterPlayerAsmsSubtitle?> _parseSubtitlesPlaylist(Rendition rendition) async {
     try {
       final HlsPlaylistParser hlsPlaylistParser = HlsPlaylistParser.create();
-      final subtitleData = await BetterPlayerAsmsUtils.getDataFromUrl(
-        rendition.url.toString(),
-      );
+      final subtitleData = await BetterPlayerAsmsUtils.getDataFromUrl(rendition.url.toString());
       if (subtitleData == null) {
         return null;
       }
 
-      final parsedSubtitle = await hlsPlaylistParser.parseString(
-        rendition.url,
-        subtitleData,
-      );
+      final parsedSubtitle = await hlsPlaylistParser.parseString(rendition.url, subtitleData);
       final hlsMediaPlaylist = parsedSubtitle as HlsMediaPlaylist;
       final hlsSubtitlesUrls = <String>[];
 
@@ -147,8 +113,7 @@ sealed class BetterPlayerHlsUtils {
         hlsSubtitlesUrls.add(realUrl);
 
         if (isSegmented) {
-          final int nextMicroSecondsFromStart =
-              microSecondsFromStart + segment.durationUs!;
+          final int nextMicroSecondsFromStart = microSecondsFromStart + segment.durationUs!;
           microSecondsFromStart = nextMicroSecondsFromStart;
           asmsSegments.add(
             BetterPlayerAsmsSubtitleSegment(
@@ -168,10 +133,7 @@ sealed class BetterPlayerHlsUtils {
       bool isDefault = false;
 
       if (rendition.format.selectionFlags != null) {
-        isDefault = Util.checkBitPositionIsSet(
-          rendition.format.selectionFlags!,
-          1,
-        );
+        isDefault = Util.checkBitPositionIsSet(rendition.format.selectionFlags!, 1);
       }
 
       return BetterPlayerAsmsSubtitle(
@@ -190,15 +152,9 @@ sealed class BetterPlayerHlsUtils {
     }
   }
 
-  static Future<List<BetterPlayerAsmsAudioTrack>> parseLanguages(
-    String data,
-    String masterPlaylistUrl,
-  ) async {
+  static Future<List<BetterPlayerAsmsAudioTrack>> parseLanguages(String data, String masterPlaylistUrl) async {
     final List<BetterPlayerAsmsAudioTrack> audios = [];
-    final parsedPlaylist = await HlsPlaylistParser.create().parseString(
-      Uri.parse(masterPlaylistUrl),
-      data,
-    );
+    final parsedPlaylist = await HlsPlaylistParser.create().parseString(Uri.parse(masterPlaylistUrl), data);
     if (parsedPlaylist is HlsMasterPlaylist) {
       for (int index = 0; index < parsedPlaylist.audios.length; index++) {
         final Rendition audio = parsedPlaylist.audios[index];

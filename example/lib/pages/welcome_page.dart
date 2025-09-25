@@ -34,8 +34,10 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
+
   @override
-  _WelcomePageState createState() => _WelcomePageState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
@@ -178,17 +180,12 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future _navigateToPage(Widget routeWidget) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => routeWidget),
-    );
+    return Navigator.push(context, MaterialPageRoute(builder: (context) => routeWidget));
   }
 
   ///Save subtitles to file, so we can use it later
   Future _saveAssetSubtitleToFile() async {
-    String content = await rootBundle.loadString(
-      "assets/example_subtitles.srt",
-    );
+    String content = await rootBundle.loadString("assets/example_subtitles.srt");
     final directory = await getApplicationDocumentsDirectory();
     var file = File("${directory.path}/example_subtitles.srt");
     file.writeAsString(content);
@@ -203,9 +200,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future _saveAssetEncryptVideoToFile() async {
-    var content = await rootBundle.load(
-      "assets/${Constants.fileTestVideoEncryptUrl}",
-    );
+    var content = await rootBundle.load("assets/${Constants.fileTestVideoEncryptUrl}");
     final directory = await getApplicationDocumentsDirectory();
     var file = File("${directory.path}/${Constants.fileTestVideoEncryptUrl}");
     file.writeAsBytesSync(content.buffer.asUint8List());

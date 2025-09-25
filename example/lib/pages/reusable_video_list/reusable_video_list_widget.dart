@@ -11,23 +11,16 @@ class ReusableVideoListWidget extends StatefulWidget {
   final ReusableVideoListController? videoListController;
   final Function? canBuildVideo;
 
-  const ReusableVideoListWidget({
-    Key? key,
-    this.videoListData,
-    this.videoListController,
-    this.canBuildVideo,
-  }) : super(key: key);
+  const ReusableVideoListWidget({super.key, this.videoListData, this.videoListController, this.canBuildVideo});
 
   @override
-  _ReusableVideoListWidgetState createState() =>
-      _ReusableVideoListWidgetState();
+  State<ReusableVideoListWidget> createState() => _ReusableVideoListWidgetState();
 }
 
 class _ReusableVideoListWidgetState extends State<ReusableVideoListWidget> {
   VideoListData? get videoListData => widget.videoListData;
   BetterPlayerController? controller;
-  StreamController<BetterPlayerController?>
-  betterPlayerControllerStreamController = StreamController.broadcast();
+  StreamController<BetterPlayerController?> betterPlayerControllerStreamController = StreamController.broadcast();
   bool _initialized = false;
   Timer? _timer;
 
@@ -102,10 +95,7 @@ class _ReusableVideoListWidgetState extends State<ReusableVideoListWidget> {
         children: [
           Padding(
             padding: EdgeInsets.all(8),
-            child: Text(
-              videoListData!.videoTitle,
-              style: TextStyle(fontSize: 50),
-            ),
+            child: Text(videoListData!.videoTitle, style: TextStyle(fontSize: 50)),
           ),
           VisibilityDetector(
             key: Key(hashCode.toString() + DateTime.now().toString()),
@@ -138,11 +128,7 @@ class _ReusableVideoListWidgetState extends State<ReusableVideoListWidget> {
                       : Container(
                           color: Colors.black,
                           child: Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
+                            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
                           ),
                         ),
                 );

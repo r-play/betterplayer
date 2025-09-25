@@ -58,7 +58,7 @@ bool _remoteCommandsInitialized = false;
                                    viewIdentifier:(int64_t)viewId
                                         arguments:(id _Nullable)args {
     NSNumber* textureId = [args objectForKey:@"textureId"];
-    BetterPlayerView* player = [_players objectForKey:@(textureId.intValue)];
+    BetterPlayer* player = [_players objectForKey:@(textureId.intValue)];
     return player;
 }
 

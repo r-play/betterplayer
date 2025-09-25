@@ -3,8 +3,10 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class OverriddenDurationPage extends StatefulWidget {
+  const OverriddenDurationPage({super.key});
+
   @override
-  _OverriddenDurationPageState createState() => _OverriddenDurationPageState();
+  State<OverriddenDurationPage> createState() => _OverriddenDurationPageState();
 }
 
 class _OverriddenDurationPageState extends State<OverriddenDurationPage> {
@@ -12,12 +14,11 @@ class _OverriddenDurationPageState extends State<OverriddenDurationPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-          fit: BoxFit.contain,
-          handleLifecycle: true,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      handleLifecycle: true,
+    );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _setupDataSource();
     super.initState();

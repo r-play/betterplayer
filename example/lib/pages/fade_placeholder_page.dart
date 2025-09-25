@@ -5,24 +5,25 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class FadePlaceholderPage extends StatefulWidget {
+  const FadePlaceholderPage({super.key});
+
   @override
-  _FadePlaceholderPageState createState() => _FadePlaceholderPageState();
+  State<FadePlaceholderPage> createState() => _FadePlaceholderPageState();
 }
 
 class _FadePlaceholderPageState extends State<FadePlaceholderPage> {
   late BetterPlayerController _betterPlayerController;
-  StreamController<bool> _playController = StreamController.broadcast();
+  final StreamController<bool> _playController = StreamController.broadcast();
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-          fit: BoxFit.contain,
-          placeholder: _buildPlaceholder(),
-          showPlaceholderUntilPlay: true,
-          placeholderOnTop: false,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      placeholder: _buildPlaceholder(),
+      showPlaceholderUntilPlay: true,
+      placeholderOnTop: false,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.forBiggerBlazesUrl,
@@ -63,10 +64,7 @@ class _FadePlaceholderPageState extends State<FadePlaceholderPage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Normal player with placeholder which fade.",
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text("Normal player with placeholder which fade.", style: TextStyle(fontSize: 16)),
           ),
           AspectRatio(
             aspectRatio: 16 / 9,

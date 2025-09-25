@@ -3,9 +3,10 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class ControlsConfigurationPage extends StatefulWidget {
+  const ControlsConfigurationPage({super.key});
+
   @override
-  _ControlsConfigurationPageState createState() =>
-      _ControlsConfigurationPageState();
+  State<ControlsConfigurationPage> createState() => _ControlsConfigurationPageState();
 }
 
 class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
@@ -13,28 +14,26 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
 
   @override
   void initState() {
-    BetterPlayerControlsConfiguration controlsConfiguration =
-        BetterPlayerControlsConfiguration(
-          controlBarColor: Colors.indigoAccent.withAlpha(200),
-          iconsColor: Colors.lightGreen,
-          playIcon: Icons.forward,
-          progressBarPlayedColor: Colors.grey,
-          progressBarHandleColor: Colors.lightGreen,
-          enableSkips: false,
-          enableFullscreen: false,
-          controlBarHeight: 60,
-          loadingColor: Colors.red,
-          overflowModalColor: Colors.indigo,
-          overflowModalTextColor: Colors.white,
-          overflowMenuIconsColor: Colors.white,
-        );
+    BetterPlayerControlsConfiguration controlsConfiguration = BetterPlayerControlsConfiguration(
+      controlBarColor: Colors.indigoAccent.withAlpha(200),
+      iconsColor: Colors.lightGreen,
+      playIcon: Icons.forward,
+      progressBarPlayedColor: Colors.grey,
+      progressBarHandleColor: Colors.lightGreen,
+      enableSkips: false,
+      enableFullscreen: false,
+      controlBarHeight: 60,
+      loadingColor: Colors.red,
+      overflowModalColor: Colors.indigo,
+      overflowModalTextColor: Colors.white,
+      overflowMenuIconsColor: Colors.white,
+    );
 
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-          fit: BoxFit.contain,
-          controlsConfiguration: controlsConfiguration,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      controlsConfiguration: controlsConfiguration,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.elephantDreamVideoUrl,
@@ -66,9 +65,7 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
             onPressed: () {
               setState(() {
                 _betterPlayerController.setBetterPlayerControlsConfiguration(
-                  BetterPlayerControlsConfiguration(
-                    overflowModalColor: Colors.amberAccent,
-                  ),
+                  BetterPlayerControlsConfiguration(overflowModalColor: Colors.amberAccent),
                 );
               });
             },

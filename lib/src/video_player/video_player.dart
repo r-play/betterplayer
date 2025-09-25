@@ -40,8 +40,7 @@ class VideoPlayerValue {
 
   /// Returns an instance with a `null` [Duration] and the given
   /// [errorDescription].
-  VideoPlayerValue.erroneous(String errorDescription)
-    : this(duration: null, errorDescription: errorDescription);
+  VideoPlayerValue.erroneous(String errorDescription) : this(duration: null, errorDescription: errorDescription);
 
   /// The total duration of the video.
   ///
@@ -179,8 +178,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     }
   }
 
-  final StreamController<VideoEvent> videoEventStreamController =
-      StreamController.broadcast();
+  final StreamController<VideoEvent> videoEventStreamController = StreamController.broadcast();
   final Completer<void> _creatingCompleter = Completer<void>();
   int? _textureId;
 
@@ -199,9 +197,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
   /// Attempts to open the given [dataSource] and load metadata about the video.
   Future<void> _create() async {
-    _textureId = await _videoPlayerPlatform.create(
-      bufferingConfiguration: bufferingConfiguration,
-    );
+    _textureId = await _videoPlayerPlatform.create(bufferingConfiguration: bufferingConfiguration);
     _creatingCompleter.complete(null);
 
     unawaited(_applyLooping());
@@ -267,9 +263,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       }
     }
 
-    _eventSubscription = _videoPlayerPlatform
-        .videoEventsFor(_textureId)
-        .listen(eventListener, onError: errorListener);
+    _eventSubscription = _videoPlayerPlatform.videoEventsFor(_textureId).listen(eventListener, onError: errorListener);
   }
 
   /// Set data source for playing a video from an asset.
@@ -395,20 +389,13 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       return;
     }
 
-    value = VideoPlayerValue(
-      duration: null,
-      isLooping: value.isLooping,
-      volume: value.volume,
-    );
+    value = VideoPlayerValue(duration: null, isLooping: value.isLooping, volume: value.volume);
 
     if (!_creatingCompleter.isCompleted) await _creatingCompleter.future;
 
     _initializingCompleter = Completer<void>();
 
-    await VideoPlayerPlatform.instance.setDataSource(
-      _textureId,
-      dataSourceDescription,
-    );
+    await VideoPlayerPlatform.instance.setDataSource(_textureId, dataSourceDescription);
     return _initializingCompleter.future;
   }
 
@@ -464,9 +451,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     _timer?.cancel();
     if (value.isPlaying) {
       await _videoPlayerPlatform.play(_textureId);
-      _timer = Timer.periodic(const Duration(milliseconds: 300), (
-        Timer timer,
-      ) async {
+      _timer = Timer.periodic(const Duration(milliseconds: 300), (Timer timer) async {
         if (_isDisposed) {
           return;
         }
@@ -478,8 +463,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         }
         _updatePosition(newPosition, absolutePosition: newAbsolutePosition);
         if (_seekPosition != null && newPosition != null) {
-          final difference =
-              newPosition.inMilliseconds - _seekPosition!.inMilliseconds;
+          final difference = newPosition.inMilliseconds - _seekPosition!.inMilliseconds;
           if (difference > 0) {
             _seekPosition = null;
           }
@@ -586,27 +570,11 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// [height] specifies height of the selected track
   /// [bitrate] specifies bitrate of the selected track
   Future<void> setTrackParameters(int? width, int? height, int? bitrate) async {
-    await _videoPlayerPlatform.setTrackParameters(
-      _textureId,
-      width,
-      height,
-      bitrate,
-    );
+    await _videoPlayerPlatform.setTrackParameters(_textureId, width, height, bitrate);
   }
 
-  Future<void> enablePictureInPicture({
-    double? top,
-    double? left,
-    double? width,
-    double? height,
-  }) async {
-    await _videoPlayerPlatform.enablePictureInPicture(
-      textureId,
-      top,
-      left,
-      width,
-      height,
-    );
+  Future<void> enablePictureInPicture({double? top, double? left, double? width, double? height}) async {
+    await _videoPlayerPlatform.enablePictureInPicture(textureId, top, left, width, height);
   }
 
   Future<void> disablePictureInPicture() async {
@@ -655,14 +623,14 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 /// Widget that displays the video controlled by [controller].
 class VideoPlayer extends StatefulWidget {
   /// Uses the given [controller] for all video rendered in this widget.
-  const VideoPlayer(this.controller, {Key? key}) : super(key: key);
+  const VideoPlayer(this.controller, {super.key});
 
   /// The [VideoPlayerController] responsible for the video being rendered in
   /// this widget.
   final VideoPlayerController? controller;
 
   @override
-  _VideoPlayerState createState() => _VideoPlayerState();
+  State<VideoPlayer> createState() => _VideoPlayerState();
 }
 
 class _VideoPlayerState extends State<VideoPlayer> {
@@ -705,9 +673,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return _textureId == null
-        ? Container()
-        : _videoPlayerPlatform.buildView(_textureId);
+    return _textureId == null ? Container() : _videoPlayerPlatform.buildView(_textureId);
   }
 }
 
@@ -831,9 +797,8 @@ class VideoProgressIndicator extends StatefulWidget {
     VideoProgressColors? colors,
     this.allowScrubbing,
     this.padding = const EdgeInsets.only(top: 5.0),
-    Key? key,
-  }) : colors = colors ?? VideoProgressColors(),
-       super(key: key);
+    super.key,
+  }) : colors = colors ?? VideoProgressColors();
 
   /// The [VideoPlayerController] that actually associates a video with this
   /// widget.
@@ -857,7 +822,7 @@ class VideoProgressIndicator extends StatefulWidget {
   final EdgeInsets padding;
 
   @override
-  _VideoProgressIndicatorState createState() => _VideoProgressIndicatorState();
+  State<VideoProgressIndicator> createState() => _VideoProgressIndicatorState();
 }
 
 class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
@@ -924,15 +889,9 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
         backgroundColor: colors.backgroundColor,
       );
     }
-    final Widget paddedProgressIndicator = Padding(
-      padding: widget.padding,
-      child: progressIndicator,
-    );
+    final Widget paddedProgressIndicator = Padding(padding: widget.padding, child: progressIndicator);
     if (widget.allowScrubbing!) {
-      return _VideoScrubber(
-        controller: controller,
-        child: paddedProgressIndicator,
-      );
+      return _VideoScrubber(controller: controller, child: paddedProgressIndicator);
     } else {
       return paddedProgressIndicator;
     }
@@ -962,7 +921,7 @@ class ClosedCaption extends StatelessWidget {
   /// [VideoPlayerValue.caption].
   ///
   /// If [text] is null, nothing will be displayed.
-  const ClosedCaption({Key? key, this.text, this.textStyle}) : super(key: key);
+  const ClosedCaption({super.key, this.text, this.textStyle});
 
   /// The text that will be shown in the closed caption, or null if no caption
   /// should be shown.
@@ -977,10 +936,7 @@ class ClosedCaption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle effectiveTextStyle =
-        textStyle ??
-        DefaultTextStyle.of(
-          context,
-        ).style.copyWith(fontSize: 36.0, color: Colors.white);
+        textStyle ?? DefaultTextStyle.of(context).style.copyWith(fontSize: 36.0, color: Colors.white);
 
     if (text == null) {
       return const SizedBox.shrink();
@@ -991,10 +947,7 @@ class ClosedCaption extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 24.0),
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: const Color(0xB8000000),
-            borderRadius: BorderRadius.circular(2.0),
-          ),
+          decoration: BoxDecoration(color: const Color(0xB8000000), borderRadius: BorderRadius.circular(2.0)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: Text(text!, style: effectiveTextStyle),

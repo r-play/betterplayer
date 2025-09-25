@@ -3,8 +3,10 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPlayerPage extends StatefulWidget {
+  const NotificationPlayerPage({super.key});
+
   @override
-  _NotificationPlayerPageState createState() => _NotificationPlayerPageState();
+  State<NotificationPlayerPage> createState() => _NotificationPlayerPageState();
 }
 
 class _NotificationPlayerPageState extends State<NotificationPlayerPage> {
@@ -12,12 +14,11 @@ class _NotificationPlayerPageState extends State<NotificationPlayerPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-          fit: BoxFit.contain,
-          handleLifecycle: true,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      handleLifecycle: true,
+    );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _setupDataSource();
     super.initState();
@@ -47,10 +48,7 @@ class _NotificationPlayerPageState extends State<NotificationPlayerPage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Click play on player to show notification in status bar.",
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text("Click play on player to show notification in status bar.", style: TextStyle(fontSize: 16)),
           ),
           AspectRatio(
             aspectRatio: 16 / 9,

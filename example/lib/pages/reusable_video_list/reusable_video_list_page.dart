@@ -7,18 +7,16 @@ import 'package:better_player_example/pages/reusable_video_list/reusable_video_l
 import 'package:flutter/material.dart';
 
 class ReusableVideoListPage extends StatefulWidget {
+  const ReusableVideoListPage({super.key});
+
   @override
-  _ReusableVideoListPageState createState() => _ReusableVideoListPageState();
+  State<ReusableVideoListPage> createState() => _ReusableVideoListPageState();
 }
 
 class _ReusableVideoListPageState extends State<ReusableVideoListPage> {
-  ReusableVideoListController videoListController =
-      ReusableVideoListController();
-  final _random = new Random();
-  final List<String> _videos = [
-    Constants.forBiggerBlazesUrl,
-    Constants.forBiggerJoyridesVideoUrl,
-  ];
+  ReusableVideoListController videoListController = ReusableVideoListController();
+  final _random = Random();
+  final List<String> _videos = [Constants.forBiggerBlazesUrl, Constants.forBiggerJoyridesVideoUrl];
   List<VideoListData> dataList = [];
   var value = 0;
   final ScrollController _scrollController = ScrollController();

@@ -29,7 +29,6 @@ class BetterPlayerBufferingConfiguration {
     this.minBufferMs = defaultMinBufferMs,
     this.maxBufferMs = defaultMaxBufferMs,
     this.bufferForPlaybackMs = defaultBufferForPlaybackMs,
-    this.bufferForPlaybackAfterRebufferMs =
-        defaultBufferForPlaybackAfterRebufferMs,
+    this.bufferForPlaybackAfterRebufferMs = defaultBufferForPlaybackAfterRebufferMs,
   });
 }
