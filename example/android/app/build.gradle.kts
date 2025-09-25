@@ -22,7 +22,7 @@ android {
     sourceSets["main"].java.srcDirs("src/main/kotlin")
 
     defaultConfig {
-        applicationId = "com.jhomlala.better_player_example"
+        applicationId = "uz.shs.better_player_example"
         minSdk = 24
         targetSdk = 36
         multiDexEnabled = true
