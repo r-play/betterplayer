@@ -29,12 +29,11 @@ import androidx.media3.ui.PlayerNotificationManager.BitmapCallback
 import androidx.work.OneTimeWorkRequest
 import android.util.Log
 import android.view.Surface
-import androidx.annotation.RequiresApi
+import androidx.annotation.OptIn
 import androidx.lifecycle.Observer
 import androidx.media3.extractor.DefaultExtractorsFactory
 import io.flutter.plugin.common.EventChannel.EventSink
 import androidx.work.Data
-import androidx.media3.*
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
@@ -44,6 +43,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
@@ -74,7 +74,9 @@ import java.lang.IllegalStateException
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.net.toUri
 
+@UnstableApi
 internal class BetterPlayer(
     context: Context,
     private val eventChannel: EventChannel,
@@ -120,6 +122,7 @@ internal class BetterPlayer(
         setupVideoPlayer(eventChannel, textureEntry, result)
     }
 
+    @OptIn(UnstableApi::class)
     fun setDataSource(
         context: Context,
         key: String?,
@@ -138,7 +141,7 @@ internal class BetterPlayer(
     ) {
         this.key = key
         isInitialized = false
-        val uri = Uri.parse(dataSource)
+        val uri = dataSource?.toUri()
         var dataSourceFactory: DataSource.Factory?
         val userAgent = getUserAgent(headers)
         if (!licenseUrl.isNullOrEmpty()) {
@@ -149,40 +152,30 @@ internal class BetterPlayer(
                     httpMediaDrmCallback.setKeyRequestProperty(drmKey, drmValue)
                 }
             }
-            if (Util.SDK_INT < 18) {
-                Log.e(TAG, "Protected content not supported on API levels below 18")
-                drmSessionManager = null
-            } else {
-                val drmSchemeUuid = Util.getDrmUuid("widevine")
-                if (drmSchemeUuid != null) {
-                    drmSessionManager = DefaultDrmSessionManager.Builder()
-                        .setUuidAndExoMediaDrmProvider(
-                            drmSchemeUuid
-                        ) { uuid: UUID? ->
-                            try {
-                                val mediaDrm = FrameworkMediaDrm.newInstance(uuid!!)
-                                // Force L3.
-                                mediaDrm.setPropertyString("securityLevel", "L3")
-                                return@setUuidAndExoMediaDrmProvider mediaDrm
-                            } catch (e: UnsupportedDrmException) {
-                                return@setUuidAndExoMediaDrmProvider DummyExoMediaDrm()
-                            }
+            val drmSchemeUuid = Util.getDrmUuid("widevine")
+            if (drmSchemeUuid != null) {
+                drmSessionManager = DefaultDrmSessionManager.Builder()
+                    .setUuidAndExoMediaDrmProvider(
+                        drmSchemeUuid
+                    ) { uuid: UUID? ->
+                        try {
+                            val mediaDrm = FrameworkMediaDrm.newInstance(uuid!!)
+                            // Force L3.
+                            mediaDrm.setPropertyString("securityLevel", "L3")
+                            return@setUuidAndExoMediaDrmProvider mediaDrm
+                        } catch (_: UnsupportedDrmException) {
+                            return@setUuidAndExoMediaDrmProvider DummyExoMediaDrm()
                         }
-                        .setMultiSession(false)
-                        .build(httpMediaDrmCallback)
-                }
+                    }
+                    .setMultiSession(false)
+                    .build(httpMediaDrmCallback)
             }
         } else if (!clearKey.isNullOrEmpty()) {
-            drmSessionManager = if (Util.SDK_INT < 18) {
-                Log.e(TAG, "Protected content not supported on API levels below 18")
-                null
-            } else {
-                DefaultDrmSessionManager.Builder()
-                    .setUuidAndExoMediaDrmProvider(
-                        C.CLEARKEY_UUID,
-                        FrameworkMediaDrm.DEFAULT_PROVIDER
-                    ).build(LocalMediaDrmCallback(clearKey.toByteArray()))
-            }
+            DefaultDrmSessionManager.Builder()
+                .setUuidAndExoMediaDrmProvider(
+                    C.CLEARKEY_UUID,
+                    FrameworkMediaDrm.DEFAULT_PROVIDER
+                ).build(LocalMediaDrmCallback(clearKey.toByteArray()))
         } else {
             drmSessionManager = null
         }
@@ -201,7 +194,10 @@ internal class BetterPlayer(
         }
         val mediaSource = buildMediaSource(uri, dataSourceFactory, formatHint, cacheKey, context)
         if (overriddenDuration != 0L) {
-            val clippingMediaSource = ClippingMediaSource(mediaSource, 0, overriddenDuration * 1000)
+            val clippingMediaSource = ClippingMediaSource.Builder(mediaSource)
+                .setStartPositionMs(0)
+                .setEndPositionMs(overriddenDuration * 1000)
+                .build()
             exoPlayer?.setMediaSource(clippingMediaSource)
         } else {
             exoPlayer?.setMediaSource(mediaSource)
@@ -220,7 +216,6 @@ internal class BetterPlayer(
                 return title
             }
 
-            @RequiresApi(Build.VERSION_CODES.M)
             @SuppressLint("UnspecifiedImmutableFlag")
             override fun createCurrentContentIntent(player: Player): PendingIntent? {
                 val packageName = context.applicationContext.packageName
@@ -326,10 +321,6 @@ internal class BetterPlayer(
                 setUsePreviousAction(false)
                 setUseStopAction(false)
             }
-
-            setupMediaSession(context)?.let {
-                setMediaSessionToken(it.sessionToken)
-            }
         }
 
         refreshHandler = Handler(Looper.getMainLooper())
@@ -380,7 +371,7 @@ internal class BetterPlayer(
     }
 
     private fun buildMediaSource(
-        uri: Uri,
+        uri: Uri?,
         mediaDataSourceFactory: DataSource.Factory,
         formatHint: String?,
         cacheKey: String?,
@@ -388,7 +379,7 @@ internal class BetterPlayer(
     ): MediaSource {
         val type: Int
         if (formatHint == null) {
-            var lastPathSegment = uri.lastPathSegment
+            var lastPathSegment = uri?.lastPathSegment
             if (lastPathSegment == null) {
                 lastPathSegment = ""
             }
@@ -419,7 +410,7 @@ internal class BetterPlayer(
                 DefaultDataSource.Factory(context, mediaDataSourceFactory)
             ).apply {
                 if (drmSessionManagerProvider != null) {
-                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    setDrmSessionManagerProvider(drmSessionManagerProvider)
                 }
             }.createMediaSource(mediaItem)
 
@@ -428,14 +419,14 @@ internal class BetterPlayer(
                 DefaultDataSource.Factory(context, mediaDataSourceFactory)
             ).apply {
                 if (drmSessionManagerProvider != null) {
-                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    setDrmSessionManagerProvider(drmSessionManagerProvider)
                 }
             }.createMediaSource(mediaItem)
 
             C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(mediaDataSourceFactory)
                 .apply {
                     if (drmSessionManagerProvider != null) {
-                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                        setDrmSessionManagerProvider(drmSessionManagerProvider)
                     }
                 }.createMediaSource(mediaItem)
 
@@ -444,7 +435,7 @@ internal class BetterPlayer(
                 DefaultExtractorsFactory()
             ).apply {
                 if (drmSessionManagerProvider != null) {
-                    setDrmSessionManagerProvider(drmSessionManagerProvider!!)
+                    setDrmSessionManagerProvider(drmSessionManagerProvider)
                 }
             }.createMediaSource(mediaItem)
 
@@ -528,12 +519,12 @@ internal class BetterPlayer(
 
     @Suppress("DEPRECATION")
     private fun setAudioAttributes(exoPlayer: ExoPlayer?, mixWithOthers: Boolean) {
-        val audioComponent = exoPlayer?.audioComponent ?: return
-        audioComponent.setAudioAttributes(
-            AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(),
+        exoPlayer?.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .build(),
             !mixWithOthers
         )
-
     }
 
     fun play() {
@@ -589,7 +580,7 @@ internal class BetterPlayer(
                 if (!timeline.isEmpty) {
                     val windowStartTimeMs =
                         timeline.getWindow(0, Timeline.Window()).windowStartTimeMs
-                    val pos = exoPlayer?.currentPosition ?: 0L
+                    val pos = exoPlayer.currentPosition
                     return windowStartTimeMs + pos
                 }
             }
@@ -770,7 +761,7 @@ internal class BetterPlayer(
 
     override fun hashCode(): Int {
         var result = exoPlayer?.hashCode() ?: 0
-        result = 31 * result + if (surface != null) surface.hashCode() else 0
+        result = 31 * result + (surface?.hashCode() ?: 0)
         return result
     }
 

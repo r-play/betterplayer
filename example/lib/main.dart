@@ -18,13 +18,8 @@ class MyApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en', 'US'),
-          const Locale('pl', 'PL'),
-        ],
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-        ),
+        supportedLocales: [const Locale('en', 'US'), const Locale('pl', 'PL')],
+        theme: ThemeData(primarySwatch: Colors.green),
         home: WelcomePage(),
       ),
     );

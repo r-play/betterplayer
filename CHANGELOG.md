@@ -1,3 +1,13 @@
+## 1.1.0
+
+* Flutter SDK updated → 3.35.0
+* Dart SDK updated → 3.9.0
+* Gradle updated → 8.13.0
+* Kotlin Gradle Plugin updated → 2.2.20
+* Android Media3 Player updated → 1.8.0
+* Minimum iOS version raised to → 13
+* Package updates and compatibility improvements
+
 ## 1.0.8
 
 * package update
