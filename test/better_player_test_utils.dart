@@ -9,15 +9,10 @@ class BetterPlayerTestUtils {
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
   static const String forBiggerBlazesUrl =
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
-  static const String elephantDreamStreamUrl =
-      "http://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8";
+  static const String elephantDreamStreamUrl = "http://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8";
 
-  static BetterPlayerMockController setupBetterPlayerMockController({
-    VideoPlayerController? controller,
-  }) {
-    final mockController = BetterPlayerMockController(
-      const BetterPlayerConfiguration(),
-    );
+  static BetterPlayerMockController setupBetterPlayerMockController({VideoPlayerController? controller}) {
+    final mockController = BetterPlayerMockController(const BetterPlayerConfiguration());
     if (controller != null) {
       mockController.videoPlayerController = controller;
     }
@@ -26,9 +21,7 @@ class BetterPlayerTestUtils {
 
   static MockVideoPlayerController setupMockVideoPlayerControler() {
     final mockVideoPlayerController = MockVideoPlayerController();
-    mockVideoPlayerController.setNetworkDataSource(
-      BetterPlayerTestUtils.forBiggerBlazesUrl,
-    );
+    mockVideoPlayerController.setNetworkDataSource(BetterPlayerTestUtils.forBiggerBlazesUrl);
     return mockVideoPlayerController;
   }
 }

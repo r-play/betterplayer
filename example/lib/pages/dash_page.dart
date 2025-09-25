@@ -3,8 +3,10 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class DashPage extends StatefulWidget {
+  const DashPage({super.key});
+
   @override
-  _DashPageState createState() => _DashPageState();
+  State<DashPage> createState() => _DashPageState();
 }
 
 class _DashPageState extends State<DashPage> {
@@ -12,8 +14,10 @@ class _DashPageState extends State<DashPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(aspectRatio: 16 / 9, fit: BoxFit.contain);
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.dashStreamUrl,
@@ -34,10 +38,7 @@ class _DashPageState extends State<DashPage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Player with DASH audio tracks, subtitles and tracks.",
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text("Player with DASH audio tracks, subtitles and tracks.", style: TextStyle(fontSize: 16)),
           ),
           AspectRatio(
             aspectRatio: 16 / 9,

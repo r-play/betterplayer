@@ -3,23 +3,22 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class AutoFullscreenOrientationPage extends StatefulWidget {
+  const AutoFullscreenOrientationPage({super.key});
+
   @override
-  _AutoFullscreenOrientationPageState createState() =>
-      _AutoFullscreenOrientationPageState();
+  State<AutoFullscreenOrientationPage> createState() => _AutoFullscreenOrientationPageState();
 }
 
-class _AutoFullscreenOrientationPageState
-    extends State<AutoFullscreenOrientationPage> {
+class _AutoFullscreenOrientationPageState extends State<AutoFullscreenOrientationPage> {
   late BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 16 / 9,
-          fit: BoxFit.contain,
-          autoDetectFullscreenDeviceOrientation: true,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      autoDetectFullscreenDeviceOrientation: true,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.forBiggerBlazesUrl,

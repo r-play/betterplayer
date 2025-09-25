@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 class VideoListWidget extends StatefulWidget {
   final VideoListData? videoListData;
 
-  const VideoListWidget({Key? key, this.videoListData}) : super(key: key);
+  const VideoListWidget({super.key, this.videoListData});
 
   @override
-  _VideoListWidgetState createState() => _VideoListWidgetState();
+  State<VideoListWidget> createState() => _VideoListWidgetState();
 }
 
 class _VideoListWidgetState extends State<VideoListWidget> {
@@ -37,22 +37,19 @@ class _VideoListWidgetState extends State<VideoListWidget> {
         children: [
           Padding(
             padding: EdgeInsets.all(8),
-            child: Text(
-              videoListData!.videoTitle,
-              style: TextStyle(fontSize: 50),
-            ),
+            child: Text(videoListData!.videoTitle, style: TextStyle(fontSize: 50)),
           ),
           AspectRatio(
+            aspectRatio: 1,
             child: BetterPlayerListVideoPlayer(
               BetterPlayerDataSource(
                 BetterPlayerDataSourceType.network,
                 videoListData!.videoUrl,
-                notificationConfiguration:
-                    BetterPlayerNotificationConfiguration(
-                      showNotification: false,
-                      title: videoListData!.videoTitle,
-                      author: "Test",
-                    ),
+                notificationConfiguration: BetterPlayerNotificationConfiguration(
+                  showNotification: false,
+                  title: videoListData!.videoTitle,
+                  author: "Test",
+                ),
                 bufferingConfiguration: BetterPlayerBufferingConfiguration(
                   minBufferMs: 2000,
                   maxBufferMs: 10000,
@@ -60,16 +57,11 @@ class _VideoListWidgetState extends State<VideoListWidget> {
                   bufferForPlaybackAfterRebufferMs: 2000,
                 ),
               ),
-              configuration: BetterPlayerConfiguration(
-                autoPlay: false,
-                aspectRatio: 1,
-                handleLifecycle: true,
-              ),
+              configuration: BetterPlayerConfiguration(autoPlay: false, aspectRatio: 1, handleLifecycle: true),
               //key: Key(videoListData.hashCode.toString()),
               playFraction: 0.8,
               betterPlayerListVideoPlayerController: controller,
             ),
-            aspectRatio: 1,
           ),
           Padding(
             padding: EdgeInsets.all(8),

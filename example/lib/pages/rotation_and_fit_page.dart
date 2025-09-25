@@ -3,8 +3,10 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class RotationAndFitPage extends StatefulWidget {
+  const RotationAndFitPage({super.key});
+
   @override
-  _RotationAndFitPageState createState() => _RotationAndFitPageState();
+  State<RotationAndFitPage> createState() => _RotationAndFitPageState();
 }
 
 class _RotationAndFitPageState extends State<RotationAndFitPage> {
@@ -12,12 +14,11 @@ class _RotationAndFitPageState extends State<RotationAndFitPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          aspectRatio: 1.0,
-          fit: BoxFit.fill,
-          rotation: 90,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 1.0,
+      fit: BoxFit.fill,
+      rotation: 90,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.forBiggerBlazesUrl,
@@ -36,15 +37,9 @@ class _RotationAndFitPageState extends State<RotationAndFitPage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Player with different rotation and fit.",
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text("Player with different rotation and fit.", style: TextStyle(fontSize: 16)),
           ),
-          AspectRatio(
-            aspectRatio: 1.0,
-            child: BetterPlayer(controller: _betterPlayerController),
-          ),
+          AspectRatio(aspectRatio: 1.0, child: BetterPlayer(controller: _betterPlayerController)),
         ],
       ),
     );

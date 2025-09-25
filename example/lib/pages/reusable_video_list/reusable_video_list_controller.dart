@@ -8,9 +8,7 @@ class ReusableVideoListController {
   ReusableVideoListController() {
     for (int index = 0; index < 3; index++) {
       _betterPlayerControllerRegistry.add(
-        BetterPlayerController(
-          BetterPlayerConfiguration(handleLifecycle: false, autoDispose: false),
-        ),
+        BetterPlayerController(BetterPlayerConfiguration(handleLifecycle: false, autoDispose: false)),
       );
     }
   }
@@ -27,15 +25,13 @@ class ReusableVideoListController {
     return freeController;
   }
 
-  void freeBetterPlayerController(
-    BetterPlayerController? betterPlayerController,
-  ) {
+  void freeBetterPlayerController(BetterPlayerController? betterPlayerController) {
     _usedBetterPlayerControllerRegistry.remove(betterPlayerController);
   }
 
   void dispose() {
-    _betterPlayerControllerRegistry.forEach((controller) {
+    for (var controller in _betterPlayerControllerRegistry) {
       controller.dispose();
-    });
+    }
   }
 }

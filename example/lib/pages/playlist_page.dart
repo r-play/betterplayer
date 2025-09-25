@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PlaylistPage extends StatefulWidget {
+  const PlaylistPage({super.key});
+
   @override
-  _PlaylistPageState createState() => _PlaylistPageState();
+  State<PlaylistPage> createState() => _PlaylistPageState();
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
-  final GlobalKey<BetterPlayerPlaylistState> _betterPlayerPlaylistStateKey =
-      GlobalKey();
-  List<BetterPlayerDataSource> _dataSourceList = [];
+  final GlobalKey<BetterPlayerPlaylistState> _betterPlayerPlaylistStateKey = GlobalKey();
+  final List<BetterPlayerDataSource> _dataSourceList = [];
   late BetterPlayerConfiguration _betterPlayerConfiguration;
   late BetterPlayerPlaylistConfiguration _betterPlayerPlaylistConfiguration;
 
@@ -23,10 +24,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
       placeholderOnTop: true,
       showPlaceholderUntilPlay: true,
       subtitlesConfiguration: BetterPlayerSubtitlesConfiguration(fontSize: 10),
-      deviceOrientationsAfterFullScreen: [
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ],
+      deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
     );
     _betterPlayerPlaylistConfiguration = BetterPlayerPlaylistConfiguration(
       loopVideos: true,
@@ -55,10 +53,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
       ),
     );
     _dataSourceList.add(
-      BetterPlayerDataSource(
-        BetterPlayerDataSourceType.network,
-        Constants.forBiggerJoyridesVideoUrl,
-      ),
+      BetterPlayerDataSource(BetterPlayerDataSourceType.network, Constants.forBiggerJoyridesVideoUrl),
     );
 
     return _dataSourceList;
@@ -84,14 +79,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
                   ),
                 ),
                 AspectRatio(
+                  aspectRatio: 1,
                   child: BetterPlayerPlaylist(
                     key: _betterPlayerPlaylistStateKey,
                     betterPlayerConfiguration: _betterPlayerConfiguration,
-                    betterPlayerPlaylistConfiguration:
-                        _betterPlayerPlaylistConfiguration,
+                    betterPlayerPlaylistConfiguration: _betterPlayerPlaylistConfiguration,
                     betterPlayerDataSourceList: snapshot.data!,
                   ),
-                  aspectRatio: 1,
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -107,23 +101,15 @@ class _PlaylistPageState extends State<PlaylistPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print(
-                      "Currently playing video: " +
-                          _betterPlayerPlaylistController!
-                              .currentDataSourceIndex
-                              .toString(),
-                    );
+                    debugPrint("Currently playing video: ${_betterPlayerPlaylistController!.currentDataSourceIndex}");
                   },
                   child: Text("Check currently playing video index"),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _betterPlayerPlaylistController!.betterPlayerController!
-                        .pause();
+                    _betterPlayerPlaylistController!.betterPlayerController!.pause();
                   },
-                  child: Text(
-                    "Pause current video with BetterPlayerController",
-                  ),
+                  child: Text("Pause current video with BetterPlayerController"),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -131,10 +117,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                       BetterPlayerDataSource(
                         BetterPlayerDataSourceType.network,
                         Constants.bugBuckBunnyVideoUrl,
-                        placeholder: Image.network(
-                          Constants.catImageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                        placeholder: Image.network(Constants.catImageUrl, fit: BoxFit.cover),
                       ),
                     ];
                     _betterPlayerPlaylistController?.setupDataSourceList(list);
@@ -150,7 +133,5 @@ class _PlaylistPageState extends State<PlaylistPage> {
   }
 
   BetterPlayerPlaylistController? get _betterPlayerPlaylistController =>
-      _betterPlayerPlaylistStateKey
-          .currentState!
-          .betterPlayerPlaylistController;
+      _betterPlayerPlaylistStateKey.currentState!.betterPlayerPlaylistController;
 }

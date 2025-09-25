@@ -5,15 +5,15 @@ import 'package:better_player_example/constants.dart';
 import 'package:flutter/material.dart';
 
 class PlaceholderUntilPlayPage extends StatefulWidget {
+  const PlaceholderUntilPlayPage({super.key});
+
   @override
-  _PlaceholderUntilPlayPageState createState() =>
-      _PlaceholderUntilPlayPageState();
+  State<PlaceholderUntilPlayPage> createState() => _PlaceholderUntilPlayPageState();
 }
 
 class _PlaceholderUntilPlayPageState extends State<PlaceholderUntilPlayPage> {
   late BetterPlayerController _betterPlayerController;
-  StreamController<bool> _placeholderStreamController =
-      StreamController.broadcast();
+  final StreamController<bool> _placeholderStreamController = StreamController.broadcast();
   bool _showPlaceholder = true;
 
   @override
@@ -24,12 +24,11 @@ class _PlaceholderUntilPlayPageState extends State<PlaceholderUntilPlayPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-        BetterPlayerConfiguration(
-          fit: BoxFit.contain,
-          placeholder: _buildVideoPlaceholder(),
-          showPlaceholderUntilPlay: true,
-        );
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+      fit: BoxFit.contain,
+      placeholder: _buildVideoPlaceholder(),
+      showPlaceholderUntilPlay: true,
+    );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.elephantDreamVideoUrl,
@@ -55,9 +54,7 @@ class _PlaceholderUntilPlayPageState extends State<PlaceholderUntilPlayPage> {
     return StreamBuilder<bool>(
       stream: _placeholderStreamController.stream,
       builder: (context, snapshot) {
-        return _showPlaceholder
-            ? Image.network(Constants.placeholderUrl)
-            : const SizedBox();
+        return _showPlaceholder ? Image.network(Constants.placeholderUrl) : const SizedBox();
       },
     );
   }
@@ -71,10 +68,7 @@ class _PlaceholderUntilPlayPageState extends State<PlaceholderUntilPlayPage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Normal player with placeholder shown until video is started.",
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text("Normal player with placeholder shown until video is started.", style: TextStyle(fontSize: 16)),
           ),
           AspectRatio(
             aspectRatio: 16 / 9,
