@@ -33,7 +33,7 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
         registrar.register(instance, withId: "com.jhomlala/better_player")
     }
 
-    public func createArgsCodec() -> (FlutterMessageCodec & NSObjectProtocol)? { FlutterStandardMessageCodec.sharedInstance() }
+    public func createArgsCodec() -> (FlutterMessageCodec & NSObjectProtocol) { FlutterStandardMessageCodec.sharedInstance() }
 
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         guard let dict = args as? [String: Any], let textureId = (dict["textureId"] as? NSNumber)?.int64Value, let player = players[textureId] else {
