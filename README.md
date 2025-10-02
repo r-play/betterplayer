@@ -54,7 +54,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  better_player_plus: ^1.1.1
+  better_player_plus: ^1.1.2
 ```
 
 Import the package:
@@ -91,7 +91,13 @@ This package is actively evolving. Breaking changes may appear between versions.
 ### License
 Apache 2.0 — see [`LICENSE`](LICENSE).
 
-### Recent Updates (v1.1.1)
+### Recent Updates (v1.1.2)
+- **Code Quality Improvements**: Fixed missing type annotations and improved static analysis compliance
+- **Project Metadata**: Updated iOS podspec with proper project information and version consistency
+- **Dependency Management**: Fixed example app dependency version constraints for better stability
+- **Documentation**: Enhanced project documentation and version consistency across all files
+
+### Previous Updates (v1.1.1)
 - **iOS Migration**: Complete migration from Objective-C to Swift for better maintainability and modern iOS development practices
 - **Android Media3 1.8.0**: Full migration to the latest Android Media3 player with enhanced performance and features
 - **Deprecated API Fixes**: Removed deprecated GLKit dependency and updated UIApplication.keyWindow usage

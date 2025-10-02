@@ -1,6 +1,3 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 import 'dart:async';
 
 import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
@@ -293,7 +290,7 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
 
   EventChannel _eventChannelFor(int? textureId) => EventChannel('better_player_channel/videoEvents$textureId');
 
-  DurationRange _toDurationRange(value) {
+  DurationRange _toDurationRange(dynamic value) {
     final List<dynamic> pair = value as List;
     return DurationRange(Duration(milliseconds: pair[0] as int), Duration(milliseconds: pair[1] as int));
   }

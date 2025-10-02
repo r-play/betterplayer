@@ -1,3 +1,11 @@
+## 1.1.2
+
+* Fixed missing type annotation in method_channel_video_player.dart
+* Updated iOS podspec metadata with proper project information
+* Fixed example app dependency version constraints
+* Improved code quality and static analysis compliance
+* Enhanced project documentation and version consistency
+
 ## 1.1.1
 
 * iOS implementation migrated from Objective-C to Swift
