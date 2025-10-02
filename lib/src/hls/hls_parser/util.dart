@@ -45,7 +45,7 @@ class LibUtil {
 
   static int parseXsDateTime(String value) {
     const String pattern =
-        '(\\d\\d\\d\\d)\\-(\\d\\d)\\-(\\d\\d)[Tt](\\d\\d):(\\d\\d):(\\d\\d)([\\.,](\\d+))?([Zz]|((\\+|\\-)(\\d?\\d):?(\\d\\d)))?';
+        r'(\d\d\d\d)\-(\d\d)\-(\d\d)[Tt](\d\d):(\d\d):(\d\d)([\.,](\d+))?([Zz]|((\+|\-)(\d?\d):?(\d\d)))?';
     final List<Match> matchList = RegExp(pattern).allMatches(value).toList();
     if (matchList.isEmpty) {
       throw ParserException('Invalid date/time format: $value');
@@ -71,7 +71,7 @@ class LibUtil {
       int.parse(match.group(5)!),
       int.parse(match.group(6)!),
     );
-    if (match.group(8)?.isNotEmpty == true) {
+    if (match.group(8)?.isNotEmpty ?? false) {
       //todo ここ実装再検討
     }
 
@@ -122,7 +122,7 @@ class Util {
   static const int timeEndOfSource = 0;
 
   static List<String> splitCodecs(String? codecs) =>
-      codecs?.isNotEmpty != true ? <String>[] : codecs!.trim().split(RegExp('(\\s*,\\s*)'));
+      codecs?.isNotEmpty != true ? <String>[] : codecs!.trim().split(RegExp(r'(\s*,\s*)'));
 
   static bool checkBitPositionIsSet(int number, int bitPosition) {
     if ((number & (1 << (bitPosition - 1))) > 0) {

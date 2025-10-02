@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'dart:async';
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_plus/src/video_player/video_player.dart';
@@ -25,15 +27,15 @@ class BetterPlayerMaterialVideoProgressBar extends StatefulWidget {
   final Function()? onTapDown;
 
   @override
-  State<BetterPlayerMaterialVideoProgressBar> createState() {
-    return _VideoProgressBarState();
-  }
+  State<BetterPlayerMaterialVideoProgressBar> createState() => _VideoProgressBarState();
 }
 
 class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar> {
   _VideoProgressBarState() {
     listener = () {
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     };
   }
 
@@ -148,7 +150,7 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
     }
   }
 
-  void seekToRelativePosition(Offset globalPosition) async {
+  Future<void> seekToRelativePosition(Offset globalPosition) async {
     final RenderObject? renderObject = context.findRenderObject();
     if (renderObject != null) {
       final box = renderObject as RenderBox;
@@ -183,9 +185,7 @@ class _ProgressBarPainter extends CustomPainter {
   BetterPlayerProgressColors colors;
 
   @override
-  bool shouldRepaint(CustomPainter painter) {
-    return true;
-  }
+  bool shouldRepaint(CustomPainter painter) => true;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -193,8 +193,8 @@ class _ProgressBarPainter extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromPoints(Offset(0.0, size.height / 2), Offset(size.width, size.height / 2 + height)),
-        const Radius.circular(4.0),
+        Rect.fromPoints(Offset(0, size.height / 2), Offset(size.width, size.height / 2 + height)),
+        const Radius.circular(4),
       ),
       colors.backgroundPaint,
     );
@@ -218,15 +218,15 @@ class _ProgressBarPainter extends CustomPainter {
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromPoints(Offset(start, size.height / 2), Offset(end, size.height / 2 + height)),
-          const Radius.circular(4.0),
+          const Radius.circular(4),
         ),
         colors.bufferedPaint,
       );
     }
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromPoints(Offset(0.0, size.height / 2), Offset(playedPart, size.height / 2 + height)),
-        const Radius.circular(4.0),
+        Rect.fromPoints(Offset(0, size.height / 2), Offset(playedPart, size.height / 2 + height)),
+        const Radius.circular(4),
       ),
       colors.playedPaint,
     );

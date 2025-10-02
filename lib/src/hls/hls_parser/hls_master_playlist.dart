@@ -1,8 +1,8 @@
-import 'drm_init_data.dart';
-import 'format.dart';
-import 'playlist.dart';
-import 'rendition.dart';
-import 'variant.dart';
+import 'package:better_player_plus/src/hls/hls_parser/drm_init_data.dart';
+import 'package:better_player_plus/src/hls/hls_parser/format.dart';
+import 'package:better_player_plus/src/hls/hls_parser/playlist.dart';
+import 'package:better_player_plus/src/hls/hls_parser/rendition.dart';
+import 'package:better_player_plus/src/hls/hls_parser/variant.dart';
 
 class HlsMasterPlaylist extends HlsPlaylist {
   HlsMasterPlaylist({
@@ -54,14 +54,14 @@ class HlsMasterPlaylist extends HlsPlaylist {
 
   static List<Uri?> _getMediaPlaylistUrls(List<Variant> variants, List<List<Rendition>> renditionList) {
     final uriList = <Uri?>[];
-    variants.forEach((element) {
+    for (final element in variants) {
       uriList.add(element.url);
-    });
-    renditionList.forEach((element) {
+    }
+    for (final element in renditionList) {
       for (final value in element) {
         uriList.add(value.url);
       }
-    });
+    }
     return uriList;
   }
 }

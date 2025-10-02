@@ -3,6 +3,14 @@ import 'package:better_player_plus/better_player_plus.dart';
 
 ///Controller used to manage playlist player.
 class BetterPlayerPlaylistController {
+  BetterPlayerPlaylistController(
+    this._betterPlayerDataSourceList, {
+    this.betterPlayerConfiguration = const BetterPlayerConfiguration(),
+    this.betterPlayerPlaylistConfiguration = const BetterPlayerPlaylistConfiguration(),
+  }) : assert(_betterPlayerDataSourceList.isNotEmpty, "Better Player data source list can't be empty") {
+    _setup();
+  }
+
   ///List of data sources set for playlist.
   final List<BetterPlayerDataSource> _betterPlayerDataSourceList;
 
@@ -23,14 +31,6 @@ class BetterPlayerPlaylistController {
 
   ///Flag that determines whenever player is changing video
   bool _changingToNextVideo = false;
-
-  BetterPlayerPlaylistController(
-    this._betterPlayerDataSourceList, {
-    this.betterPlayerConfiguration = const BetterPlayerConfiguration(),
-    this.betterPlayerPlaylistConfiguration = const BetterPlayerPlaylistConfiguration(),
-  }) : assert(_betterPlayerDataSourceList.isNotEmpty, "Better Player data source list can't be empty") {
-    _setup();
-  }
 
   ///Initialize controller and listeners.
   void _setup() {
@@ -97,8 +97,8 @@ class BetterPlayerPlaylistController {
   void setupDataSource(int index) {
     assert(
       index >= 0 && index < _betterPlayerDataSourceList.length,
-      "Index must be greater than 0 and less than size of data source "
-      "list - 1",
+      'Index must be greater than 0 and less than size of data source '
+      'list - 1',
     );
     if (index <= _dataSourceLength) {
       _currentDataSourceIndex = index;

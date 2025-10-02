@@ -11,9 +11,8 @@ import 'package:better_player_plus/src/video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
 class BetterPlayerWithControls extends StatefulWidget {
-  final BetterPlayerController? controller;
-
   const BetterPlayerWithControls({super.key, this.controller});
+  final BetterPlayerController? controller;
 
   @override
   State<BetterPlayerWithControls> createState() => _BetterPlayerWithControlsState();
@@ -102,7 +101,7 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
     var rotation = configuration.rotation;
 
     if (!(rotation <= 360 && rotation % 90 == 0)) {
-      BetterPlayerUtils.log("Invalid rotation provided. Using rotation = 0");
+      BetterPlayerUtils.log('Invalid rotation provided. Using rotation = 0');
       rotation = 0;
     }
     if (betterPlayerController.betterPlayerDataSource == null) {
@@ -135,11 +134,10 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
     );
   }
 
-  Widget _buildPlaceholder(BetterPlayerController betterPlayerController) {
-    return betterPlayerController.betterPlayerDataSource!.placeholder ??
-        betterPlayerController.betterPlayerConfiguration.placeholder ??
-        Container();
-  }
+  Widget _buildPlaceholder(BetterPlayerController betterPlayerController) =>
+      betterPlayerController.betterPlayerDataSource!.placeholder ??
+      betterPlayerController.betterPlayerConfiguration.placeholder ??
+      Container();
 
   Widget _buildControls(BuildContext context, BetterPlayerController betterPlayerController) {
     if (controlsConfiguration.showControls) {
@@ -164,19 +162,15 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
     return const SizedBox();
   }
 
-  Widget _buildMaterialControl() {
-    return BetterPlayerMaterialControls(
-      onControlsVisibilityChanged: onControlsVisibilityChanged,
-      controlsConfiguration: controlsConfiguration,
-    );
-  }
+  Widget _buildMaterialControl() => BetterPlayerMaterialControls(
+    onControlsVisibilityChanged: onControlsVisibilityChanged,
+    controlsConfiguration: controlsConfiguration,
+  );
 
-  Widget _buildCupertinoControl() {
-    return BetterPlayerCupertinoControls(
-      onControlsVisibilityChanged: onControlsVisibilityChanged,
-      controlsConfiguration: controlsConfiguration,
-    );
-  }
+  Widget _buildCupertinoControl() => BetterPlayerCupertinoControls(
+    onControlsVisibilityChanged: onControlsVisibilityChanged,
+    controlsConfiguration: controlsConfiguration,
+  );
 
   void onControlsVisibilityChanged(bool state) {
     playerVisibilityStreamController.add(state);
@@ -272,14 +266,14 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
       }
       return Center(
         child: ClipRect(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: FittedBox(
               fit: widget.boxFit,
               child: SizedBox(
-                width: max(1.0, controller!.value.size?.width ?? 1.0),
-                height: max(1.0, controller!.value.size?.height ?? 1.0),
+                width: max(1, controller!.value.size?.width ?? 1.0),
+                height: max(1, controller!.value.size?.height ?? 1.0),
                 child: VideoPlayer(controller),
               ),
             ),

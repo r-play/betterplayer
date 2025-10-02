@@ -1,4 +1,4 @@
-import 'util.dart';
+import 'package:better_player_plus/src/hls/hls_parser/util.dart';
 
 class MimeTypes {
   static const String baseTypeVideo = 'video';
@@ -248,9 +248,7 @@ class MimeTypes {
 
   static bool isText(String? mimeType) => baseTypeText == getTopLevelType(mimeType);
 
-  static int getTrackTypeOfCodec(String codec) {
-    return getTrackType(getMediaMimeType(codec));
-  }
+  static int getTrackTypeOfCodec(String codec) => getTrackType(getMediaMimeType(codec));
 }
 
 class CustomMimeType {

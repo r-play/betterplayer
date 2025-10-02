@@ -1,5 +1,5 @@
-import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_example/constants.dart';
+import 'package:better_player_plus/better_player_plus.dart';
 import 'package:flutter/material.dart';
 
 class ControlsConfigurationPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
 
   @override
   void initState() {
-    BetterPlayerControlsConfiguration controlsConfiguration = BetterPlayerControlsConfiguration(
+    final BetterPlayerControlsConfiguration controlsConfiguration = BetterPlayerControlsConfiguration(
       controlBarColor: Colors.indigoAccent.withAlpha(200),
       iconsColor: Colors.lightGreen,
       playIcon: Icons.forward,
@@ -29,12 +29,12 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
       overflowMenuIconsColor: Colors.white,
     );
 
-    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+    final BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
       controlsConfiguration: controlsConfiguration,
     );
-    BetterPlayerDataSource dataSource = BetterPlayerDataSource(
+    final BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.elephantDreamVideoUrl,
     );
@@ -44,35 +44,33 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Controls configuration")),
-      body: Column(
-        children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Player with customized controls via BetterPlayerControlsConfiguration.",
-              style: TextStyle(fontSize: 16),
-            ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Controls configuration')),
+    body: Column(
+      children: [
+        const SizedBox(height: 8),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Player with customized controls via BetterPlayerControlsConfiguration.',
+            style: TextStyle(fontSize: 16),
           ),
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: BetterPlayer(controller: _betterPlayerController),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _betterPlayerController.setBetterPlayerControlsConfiguration(
-                  BetterPlayerControlsConfiguration(overflowModalColor: Colors.amberAccent),
-                );
-              });
-            },
-            child: Text("Reset settings"),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: BetterPlayer(controller: _betterPlayerController),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _betterPlayerController.setBetterPlayerControlsConfiguration(
+                const BetterPlayerControlsConfiguration(overflowModalColor: Colors.amberAccent),
+              );
+            });
+          },
+          child: const Text('Reset settings'),
+        ),
+      ],
+    ),
+  );
 }

@@ -17,7 +17,7 @@ void main() {
     mockController = BetterPlayerMockController(const BetterPlayerConfiguration());
   });
 
-  testWidgets("One of children is BetterPlayerWithControls", (WidgetTester tester) async {
+  testWidgets('One of children is BetterPlayerWithControls', (WidgetTester tester) async {
     await tester.pumpWidget(_wrapWidget(BetterPlayer(controller: mockController)));
     expect(find.byWidgetPredicate((widget) => widget is BetterPlayerWithControls), findsOneWidget);
   });
@@ -25,6 +25,4 @@ void main() {
 
 ///Wrap widget with material app to handle all features like navigation and
 ///localization properly.
-Widget _wrapWidget(Widget widget) {
-  return MaterialApp(home: widget);
-}
+Widget _wrapWidget(Widget widget) => MaterialApp(home: widget);

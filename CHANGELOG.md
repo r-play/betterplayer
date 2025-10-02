@@ -1,3 +1,13 @@
+## 1.1.1
+
+* iOS implementation migrated from Objective-C to Swift
+* Fixed Swift compiler errors and deprecated API usage
+* Removed deprecated GLKit dependency
+* Updated UIApplication.keyWindow usage for iOS 13+ compatibility
+* Improved plugin registration with proper Objective-C bridging
+* Enhanced code maintainability and modern iOS development practices
+* Special thanks to Cursor AI for assistance with the migration
+
 ## 1.1.0
 
 * Flutter SDK updated → 3.35.0

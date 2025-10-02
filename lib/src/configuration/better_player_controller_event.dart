@@ -16,5 +16,5 @@ enum BetterPlayerControllerEvent {
   play,
 
   ///Video set fit.
-  setFit
+  setFit,
 }

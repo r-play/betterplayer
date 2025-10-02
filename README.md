@@ -54,7 +54,7 @@ Add the dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  better_player_plus: ^1.1.0
+  better_player_plus: ^1.1.1
 ```
 
 Import the package:
@@ -91,5 +91,13 @@ This package is actively evolving. Breaking changes may appear between versions.
 ### License
 Apache 2.0 — see [`LICENSE`](LICENSE).
 
+### Recent Updates (v1.1.1)
+- **iOS Migration**: Complete migration from Objective-C to Swift for better maintainability and modern iOS development practices
+- **Android Media3 1.8.0**: Full migration to the latest Android Media3 player with enhanced performance and features
+- **Deprecated API Fixes**: Removed deprecated GLKit dependency and updated UIApplication.keyWindow usage
+- **Improved Compatibility**: Enhanced iOS 13+ support with proper backward compatibility
+
 ### Credits
 This work builds on the great foundations of Chewie and the original Better Player. Thanks to all contributors of those projects.
+
+**Special Thanks**: This project benefited greatly from Cursor AI assistance during the iOS Objective-C to Swift migration process.

@@ -2,7 +2,6 @@ import Foundation
 import Flutter
 import AVFoundation
 import AVKit
-import GLKit
 import UIKit
 
 private var timeRangeContext = 0
@@ -103,7 +102,7 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
     }
 
     private func radiansToDegrees(_ radians: CGFloat) -> CGFloat {
-        var degrees = CGFloat(GLKMathRadiansToDegrees(Float(radians)))
+        var degrees = CGFloat(radians * 180.0 / .pi)
         if degrees < 0 { degrees += 360 }
         return degrees
     }
@@ -176,8 +175,7 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
                     let delegate = BetterPlayerEzDrmAssetsLoaderDelegate(certURL, withLicenseURL: licURL)
                     self.loaderDelegate = delegate
                     let qos = DispatchQoS.QoSClass.default
-                    let attrs = DispatchQueue.Attributes.serial
-                    let streamQueue = DispatchQueue(label: "streamQueue", qos: DispatchQoS(qosClass: qos, relativePriority: -1), attributes: attrs)
+                    let streamQueue = DispatchQueue(label: "streamQueue", qos: DispatchQoS(qosClass: qos, relativePriority: -1), attributes: [])
                     asset.resourceLoader.setDelegate(delegate, queue: streamQueue)
                 }
             }
@@ -223,7 +221,7 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
 
     private func startStalledCheck() {
         if let currentItem = player.currentItem {
-            if currentItem.isPlaybackLikelyToKeepUp || (availableDuration() - CMTimeGetSeconds(currentItem.currentTime)) > 10.0 {
+            if currentItem.isPlaybackLikelyToKeepUp || (availableDuration() - CMTimeGetSeconds(currentItem.currentTime())) > 10.0 {
                 play()
             } else {
                 stalledCount += 1
@@ -265,7 +263,7 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
                 }
             }
 
-            if player.rate == 0 && CMTimeCompare(player.currentItem?.currentTime ?? .zero, .zero) == 1 && (player.currentItem?.duration ?? .zero).isValid && CMTimeCompare(player.currentItem?.currentTime ?? .zero, player.currentItem?.duration ?? .zero) == -1 && isPlaying {
+            if player.rate == 0 && CMTimeCompare(player.currentItem?.currentTime() ?? .zero, .zero) == 1 && (player.currentItem?.duration ?? .zero).isValid && CMTimeCompare(player.currentItem?.currentTime() ?? .zero, player.currentItem?.duration ?? .zero) == -1 && isPlaying {
                 handleStalled()
             }
         }
@@ -488,17 +486,34 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
 
     private func usePlayerLayer(_ frame: CGRect) {
         let layer = AVPlayerLayer(player: player)
-        if let window = UIApplication.shared.keyWindow ?? UIApplication.shared.windows.first,
-           let rootVC = window.rootViewController {
-            layer.frame = frame
-            layer.needsDisplayOnBoundsChange = true
-            rootVC.view.layer.addSublayer(layer)
-            rootVC.view.layer.needsDisplayOnBoundsChange = true
-            playerLayerRef = layer
-            pipController = nil
-            setupPipController()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.setPictureInPicture(true)
+        if #available(iOS 13.0, *) {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootVC = window.rootViewController {
+                layer.frame = frame
+                layer.needsDisplayOnBoundsChange = true
+                rootVC.view.layer.addSublayer(layer)
+                rootVC.view.layer.needsDisplayOnBoundsChange = true
+                playerLayerRef = layer
+                pipController = nil
+                setupPipController()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    self.setPictureInPicture(true)
+                }
+            }
+        } else {
+            if let window = UIApplication.shared.keyWindow ?? UIApplication.shared.windows.first,
+               let rootVC = window.rootViewController {
+                layer.frame = frame
+                layer.needsDisplayOnBoundsChange = true
+                rootVC.view.layer.addSublayer(layer)
+                rootVC.view.layer.needsDisplayOnBoundsChange = true
+                playerLayerRef = layer
+                pipController = nil
+                setupPipController()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    self.setPictureInPicture(true)
+                }
             }
         }
     }

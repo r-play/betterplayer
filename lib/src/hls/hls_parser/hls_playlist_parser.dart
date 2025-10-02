@@ -63,25 +63,25 @@ class HlsPlaylistParser {
   static const String booleanTrue = 'YES';
   static const String booleanFalse = 'NO';
   static const String attrClosedCaptionsNone = 'CLOSED-CAPTIONS=NONE';
-  static const String regexpAverageBandwidth = 'AVERAGE-BANDWIDTH=(\\d+)\\b';
+  static const String regexpAverageBandwidth = r'AVERAGE-BANDWIDTH=(\d+)\b';
   static const String regexpVideo = 'VIDEO="(.+?)"';
   static const String regexpAudio = 'AUDIO="(.+?)"';
   static const String regexpSubtitles = 'SUBTITLES="(.+?)"';
   static const String regexpClosedCaptions = 'CLOSED-CAPTIONS="(.+?)"';
-  static const String regexpBandwidth = '[^-]BANDWIDTH=(\\d+)\\b';
+  static const String regexpBandwidth = r'[^-]BANDWIDTH=(\d+)\b';
   static const String regexpChannels = 'CHANNELS="(.+?)"';
   static const String regexpCodecs = 'CODECS="(.+?)"';
-  static const String regexpResolutions = 'RESOLUTION=(\\d+x\\d+)';
-  static const String regexpFrameRate = 'FRAME-RATE=([\\d\\.]+)\\b';
+  static const String regexpResolutions = r'RESOLUTION=(\d+x\d+)';
+  static const String regexpFrameRate = r'FRAME-RATE=([\d\.]+)\b';
   static const String regexpTargetDuration = '$tagTargetDuration:(\\d+)\\b';
   static const String regexpVersion = '$tagVersion:(\\d+)\\b';
   static const String regexpPlaylistType = '$tagPlaylistType:(.+)\\b';
   static const String regexpMediaSequence = '$tagMediaSequence:(\\d+)\\b';
   static const String regexpMediaDuration = '$tagMediaDuration:([\\d\\.]+)\\b';
   static const String regexpMediaTitle = '$tagMediaDuration:[\\d\\.]+\\b,(.+)';
-  static const String regexpTimeOffset = 'TIME-OFFSET=(-?[\\d\\.]+)\\b';
+  static const String regexpTimeOffset = r'TIME-OFFSET=(-?[\d\.]+)\b';
   static const String regexpByteRange = '$tagByteRange:(\\d+(?:@\\d+)?)\\b';
-  static const String regexpAttrByteRange = 'BYTERANGE="(\\d+(?:@\\d+)?)\\b"';
+  static const String regexpAttrByteRange = r'BYTERANGE="(\d+(?:@\d+)?)\b"';
   static const String regexpMethod =
       'METHOD=($methodNone|$methodAes128|$methodSampleAes|$methodSampleAesCenc|$methodSampleAesCtr)\\s*(?:,|\$)';
   static const String regexpKeyFormat = 'KEYFORMAT="(.+?)"';
@@ -93,7 +93,7 @@ class HlsPlaylistParser {
   static const String regexpName = 'NAME="(.+?)"';
   static const String regexpGroupId = 'GROUP-ID="(.+?)"';
   static const String regexpCharacteristics = 'CHARACTERISTICS="(.+?)"';
-  static const String regexpInStreamId = 'INSTREAM-ID="((?:CC|SERVICE)\\d+)"';
+  static const String regexpInStreamId = r'INSTREAM-ID="((?:CC|SERVICE)\d+)"';
   static final String regexpAutoSelect = // ignore: non_constant_identifier_names
   _compileBooleanAttrPattern(
     'AUTOSELECT',
@@ -106,7 +106,7 @@ class HlsPlaylistParser {
   static final String regexpForced = _compileBooleanAttrPattern('FORCED');
   static const String regexpValue = 'VALUE="(.+?)"';
   static const String regexpImport = 'IMPORT="(.+?)"';
-  static const String regexpVariableReference = '\\{\\\$([a-zA-Z0-9\\-_]+)\\}';
+  static const String regexpVariableReference = r'\{\$([a-zA-Z0-9\-_]+)\}';
 
   final HlsMasterPlaylist masterPlaylist;
 
@@ -367,7 +367,7 @@ class HlsPlaylistParser {
     }
 
     // ignore: always_specify_types
-    mediaTags.forEach((line) {
+    for (final line in mediaTags) {
       final String? groupId = _parseStringAttr(
         source: line,
         pattern: regexpGroupId,
@@ -492,7 +492,7 @@ class HlsPlaylistParser {
               accessibilityChannel = int.parse(instreamId.substring(7));
             }
             muxedCaptionFormats ??= []; // ignore: always_specify_types
-            muxedCaptionFormats!.add(
+            muxedCaptionFormats.add(
               Format(
                 id: formatId,
                 label: name,
@@ -508,7 +508,7 @@ class HlsPlaylistParser {
         default:
           break;
       }
-    });
+    }
 
     if (noClosedCaptions) {
       muxedCaptionFormats = [];
@@ -626,7 +626,7 @@ class HlsPlaylistParser {
       pattern: regexpCharacteristics,
       variableDefinitions: variableDefinitions,
     );
-    if (concatenatedCharacteristics?.isEmpty != false) return 0;
+    if (concatenatedCharacteristics?.isEmpty ?? true) return 0;
     final List<String> characteristics = concatenatedCharacteristics!.split(',');
     int roleFlags = 0;
     if (characteristics.contains('public.accessibility.describes-video')) {

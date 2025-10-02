@@ -26,7 +26,7 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
         self.cacheManager.setup()
     }
 
-    public static func register(with registrar: FlutterPluginRegistrar) {
+    @objc public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "better_player_channel", binaryMessenger: registrar.messenger())
         let instance = SwiftBetterPlayerPlugin(registrar: registrar)
         registrar.addMethodCallDelegate(instance, channel: channel)

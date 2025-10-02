@@ -10,17 +10,17 @@ void main() {
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
   });
 
-  testWidgets("Better Player simple player - network", (WidgetTester tester) async {
+  testWidgets('Better Player simple player - network', (WidgetTester tester) async {
     await tester.pumpWidget(_wrapWidget(BetterPlayer.network(BetterPlayerTestUtils.bugBuckBunnyVideoUrl)));
     expect(find.byWidgetPredicate((widget) => widget is BetterPlayer), findsOneWidget);
   });
 
-  testWidgets("Better Player simple player - file", (WidgetTester tester) async {
+  testWidgets('Better Player simple player - file', (WidgetTester tester) async {
     await tester.pumpWidget(_wrapWidget(BetterPlayer.network(BetterPlayerTestUtils.bugBuckBunnyVideoUrl)));
     expect(find.byWidgetPredicate((widget) => widget is BetterPlayer), findsOneWidget);
   });
 
-  testWidgets("BetterPlayer - with controller", (WidgetTester tester) async {
+  testWidgets('BetterPlayer - with controller', (WidgetTester tester) async {
     final BetterPlayerMockController betterPlayerController = BetterPlayerMockController(
       const BetterPlayerConfiguration(),
     );
@@ -31,6 +31,4 @@ void main() {
 
 ///Wrap widget with material app to handle all features like navigation and
 ///localization properly.
-Widget _wrapWidget(Widget widget) {
-  return MaterialApp(home: widget);
-}
+Widget _wrapWidget(Widget widget) => MaterialApp(home: widget);

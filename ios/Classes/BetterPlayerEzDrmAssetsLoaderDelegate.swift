@@ -58,7 +58,11 @@ public class BetterPlayerEzDrmAssetsLoaderDelegate: NSObject, AVAssetResourceLoa
 
         let requestBytes: Data
         do {
-            requestBytes = try loadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: urlString.data(using: .utf8), options: nil)
+            guard let contentIdData = urlString.data(using: .utf8) else {
+                loadingRequest.finishLoading(with: nil)
+                return true
+            }
+            requestBytes = try loadingRequest.streamingContentKeyRequestData(forApp: certificate, contentIdentifier: contentIdData, options: nil)
         } catch {
             loadingRequest.finishLoading(with: nil)
             return true

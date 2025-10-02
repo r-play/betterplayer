@@ -6,16 +6,15 @@ import 'package:flutter/material.dart';
 
 ///Special version of Better Player used to play videos in playlist.
 class BetterPlayerPlaylist extends StatefulWidget {
-  final List<BetterPlayerDataSource> betterPlayerDataSourceList;
-  final BetterPlayerConfiguration betterPlayerConfiguration;
-  final BetterPlayerPlaylistConfiguration betterPlayerPlaylistConfiguration;
-
   const BetterPlayerPlaylist({
     super.key,
     required this.betterPlayerDataSourceList,
     required this.betterPlayerConfiguration,
     required this.betterPlayerPlaylistConfiguration,
   });
+  final List<BetterPlayerDataSource> betterPlayerDataSourceList;
+  final BetterPlayerConfiguration betterPlayerConfiguration;
+  final BetterPlayerPlaylistConfiguration betterPlayerPlaylistConfiguration;
 
   @override
   BetterPlayerPlaylistState createState() => BetterPlayerPlaylistState();
@@ -41,12 +40,10 @@ class BetterPlayerPlaylistState extends State<BetterPlayerPlaylist> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: _betterPlayerController!.getAspectRatio() ?? BetterPlayerUtils.calculateAspectRatio(context),
-      child: BetterPlayer(controller: _betterPlayerController!),
-    );
-  }
+  Widget build(BuildContext context) => AspectRatio(
+    aspectRatio: _betterPlayerController!.getAspectRatio() ?? BetterPlayerUtils.calculateAspectRatio(context),
+    child: BetterPlayer(controller: _betterPlayerController!),
+  );
 
   @override
   void dispose() {

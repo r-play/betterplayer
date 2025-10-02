@@ -29,9 +29,7 @@ class BetterPlayer extends StatefulWidget {
   final BetterPlayerController controller;
 
   @override
-  State<BetterPlayer> createState() {
-    return _BetterPlayerState();
-  }
+  State<BetterPlayer> createState() => _BetterPlayerState();
 }
 
 class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver {
@@ -71,7 +69,7 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
     _controllerEventSubscription = widget.controller.controllerEventStream.listen(onControllerEvent);
 
     //Default locale
-    var locale = const Locale("en", "US");
+    var locale = const Locale('en', 'US');
     try {
       if (mounted) {
         final contextLocale = Localizations.localeOf(context);
@@ -101,7 +99,7 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
     WidgetsBinding.instance.removeObserver(this);
     _controllerEventSubscription?.cancel();
     widget.controller.dispose();
-    VisibilityDetectorController.instance.forget(Key("${widget.controller.hashCode}_key"));
+    VisibilityDetectorController.instance.forget(Key('${widget.controller.hashCode}_key'));
     super.dispose();
   }
 
@@ -118,13 +116,10 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
     switch (event) {
       case BetterPlayerControllerEvent.openFullscreen:
         onFullScreenChanged();
-        break;
       case BetterPlayerControllerEvent.hideFullscreen:
         onFullScreenChanged();
-        break;
       default:
         setState(() {});
-        break;
     }
   }
 
@@ -143,34 +138,27 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BetterPlayerControllerProvider(controller: widget.controller, child: _buildPlayer());
-  }
+  Widget build(BuildContext context) =>
+      BetterPlayerControllerProvider(controller: widget.controller, child: _buildPlayer());
 
   Widget _buildFullScreenVideo(
     BuildContext context,
     Animation<double> animation,
     BetterPlayerControllerProvider controllerProvider,
-  ) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(alignment: Alignment.center, color: Colors.black, child: controllerProvider),
-    );
-  }
+  ) => Scaffold(
+    resizeToAvoidBottomInset: false,
+    body: Container(alignment: Alignment.center, color: Colors.black, child: controllerProvider),
+  );
 
   AnimatedWidget _defaultRoutePageBuilder(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     BetterPlayerControllerProvider controllerProvider,
-  ) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (BuildContext context, Widget? child) {
-        return _buildFullScreenVideo(context, animation, controllerProvider);
-      },
-    );
-  }
+  ) => AnimatedBuilder(
+    animation: animation,
+    builder: (BuildContext context, Widget? child) => _buildFullScreenVideo(context, animation, controllerProvider),
+  );
 
   Widget _fullScreenRoutePageBuilder(
     BuildContext context,
@@ -195,7 +183,7 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
 
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    if (_betterPlayerConfiguration.autoDetectFullscreenDeviceOrientation == true) {
+    if (_betterPlayerConfiguration.autoDetectFullscreenDeviceOrientation) {
       final aspectRatio = widget.controller.videoPlayerController?.value.aspectRatio ?? 1.0;
       List<DeviceOrientation> deviceOrientations;
       if (aspectRatio < 1.0) {
@@ -231,13 +219,11 @@ class _BetterPlayerState extends State<BetterPlayer> with WidgetsBindingObserver
     await SystemChrome.setPreferredOrientations(_betterPlayerConfiguration.deviceOrientationsAfterFullScreen);
   }
 
-  Widget _buildPlayer() {
-    return VisibilityDetector(
-      key: Key("${widget.controller.hashCode}_key"),
-      onVisibilityChanged: (VisibilityInfo info) => widget.controller.onPlayerVisibilityChanged(info.visibleFraction),
-      child: BetterPlayerWithControls(controller: widget.controller),
-    );
-  }
+  Widget _buildPlayer() => VisibilityDetector(
+    key: Key('${widget.controller.hashCode}_key'),
+    onVisibilityChanged: (VisibilityInfo info) => widget.controller.onPlayerVisibilityChanged(info.visibleFraction),
+    child: BetterPlayerWithControls(controller: widget.controller),
+  );
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

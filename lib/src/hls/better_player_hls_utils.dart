@@ -105,7 +105,7 @@ sealed class BetterPlayerHlsUtils {
           // ignore: use_string_buffers
           realUrl += '${split[index]}/';
         }
-        if (segment.url?.startsWith('http') == true) {
+        if (segment.url?.startsWith('http') ?? false) {
           realUrl = segment.url!;
         } else {
           realUrl += segment.url!;

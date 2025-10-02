@@ -2,16 +2,15 @@ import 'package:better_player_plus/better_player_plus.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 
 class ReusableVideoListController {
-  final List<BetterPlayerController> _betterPlayerControllerRegistry = [];
-  final List<BetterPlayerController> _usedBetterPlayerControllerRegistry = [];
-
   ReusableVideoListController() {
     for (int index = 0; index < 3; index++) {
       _betterPlayerControllerRegistry.add(
-        BetterPlayerController(BetterPlayerConfiguration(handleLifecycle: false, autoDispose: false)),
+        BetterPlayerController(const BetterPlayerConfiguration(handleLifecycle: false, autoDispose: false)),
       );
     }
   }
+  final List<BetterPlayerController> _betterPlayerControllerRegistry = [];
+  final List<BetterPlayerController> _usedBetterPlayerControllerRegistry = [];
 
   BetterPlayerController? getBetterPlayerController() {
     final freeController = _betterPlayerControllerRegistry.firstWhereOrNull(
@@ -30,7 +29,7 @@ class ReusableVideoListController {
   }
 
   void dispose() {
-    for (var controller in _betterPlayerControllerRegistry) {
+    for (final controller in _betterPlayerControllerRegistry) {
       controller.dispose();
     }
   }

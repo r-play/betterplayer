@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_example/constants.dart';
+import 'package:better_player_plus/better_player_plus.dart';
 import 'package:flutter/material.dart';
 
 class EventListenerPage extends StatefulWidget {
@@ -18,11 +18,11 @@ class _EventListenerPageState extends State<EventListenerPage> {
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+    const BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
     );
-    BetterPlayerDataSource dataSource = BetterPlayerDataSource(
+    final BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.elephantDreamVideoUrl,
     );
@@ -47,51 +47,47 @@ class _EventListenerPageState extends State<EventListenerPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Event listener")),
-      body: Column(
-        children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              "Better Player exposes events which can be listened with event "
-              "listener. Start player to see events flowing.",
-              style: TextStyle(fontSize: 16),
-            ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Event listener')),
+    body: Column(
+      children: [
+        const SizedBox(height: 8),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Better Player exposes events which can be listened with event '
+            'listener. Start player to see events flowing.',
+            style: TextStyle(fontSize: 16),
           ),
-          const SizedBox(height: 8),
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: BetterPlayer(controller: _betterPlayerController),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: StreamBuilder(
-              stream: _eventStreamController.stream,
-              builder: (context, snapshot) {
-                return ListView(
-                  children: events
-                      .map(
-                        (event) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Event: ${event.betterPlayerEventType} "
-                              "parameters: ${(event.parameters ?? <String, dynamic>{}).toString()}",
-                            ),
-                            Divider(),
-                          ],
+        ),
+        const SizedBox(height: 8),
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: BetterPlayer(controller: _betterPlayerController),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: StreamBuilder(
+            stream: _eventStreamController.stream,
+            builder: (context, snapshot) => ListView(
+              children: events
+                  .map(
+                    (event) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Event: ${event.betterPlayerEventType} '
+                          'parameters: ${event.parameters ?? <String, dynamic>{}}',
                         ),
-                      )
-                      .toList(),
-                );
-              },
+                        const Divider(),
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
