@@ -439,6 +439,8 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
     setState(() {
       if (notVisible) {
         betterPlayerController?.postEvent(BetterPlayerEvent(BetterPlayerEventType.controlsHiddenStart));
+      } else {
+        betterPlayerController?.postEvent(BetterPlayerEvent(BetterPlayerEventType.controlsVisibleStart));
       }
       controlsNotVisible = notVisible;
     });
