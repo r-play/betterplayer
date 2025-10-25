@@ -202,7 +202,7 @@ void main() {
       var controlsVisibleEventCount = 0;
       var controlsHiddenEventCount = 0;
       betterPlayerMockController.addEventsListener((event) {
-        if (event.betterPlayerEventType == BetterPlayerEventType.controlsVisible) {
+        if (event.betterPlayerEventType == BetterPlayerEventType.controlsVisibleEnd) {
           controlsVisibleEventCount += 1;
         }
         if (event.betterPlayerEventType == BetterPlayerEventType.controlsHiddenEnd) {
