@@ -68,11 +68,54 @@ class _BetterPlayerMaterialControlsState extends BetterPlayerControlsState<Bette
         }
         controlsNotVisible ? cancelAndRestartTimer() : changePlayerControlsNotVisible(true);
       },
-      onDoubleTap: () {
+      onDoubleTapDown: (TapDownDetails details) {
+        // Check if double tap seek is enabled
+        if (!_controlsConfiguration.enableDoubleTapSeek) {
+          // If disabled, just call parent handler and restart timer only if controls are visible
+          if (BetterPlayerMultipleGestureDetector.of(context) != null) {
+            BetterPlayerMultipleGestureDetector.of(context)!.onDoubleTap?.call();
+          }
+          if (!controlsNotVisible) {
+            cancelAndRestartTimer();
+          }
+          return;
+        }
+
+        if (_betterPlayerController?.isLiveStream() ?? true) {
+          // Don't seek for live streams, restart timer only if controls are visible
+          if (!controlsNotVisible) {
+            cancelAndRestartTimer();
+          }
+          return;
+        }
+
+        // Get screen width to determine left/right half
+        final screenWidth = MediaQuery.of(context).size.width;
+        final tapPosition = details.localPosition.dx;
+
+        // Determine direction and perform seek
+        if (tapPosition < screenWidth / 2) {
+          // Left half - seek backward
+          isSeekingForward = false;
+          skipBack();
+        } else {
+          // Right half - seek forward
+          isSeekingForward = true;
+          skipForward();
+        }
+
+        // Show visual feedback
+        showSeekFeedbackAnimation();
+
+        // Call parent handler if exists
         if (BetterPlayerMultipleGestureDetector.of(context) != null) {
           BetterPlayerMultipleGestureDetector.of(context)!.onDoubleTap?.call();
         }
-        cancelAndRestartTimer();
+
+        // Always hide controls after double tap seek to prevent flicker
+        // (skipBack/skipForward calls cancelAndRestartTimer which makes controls visible)
+        _hideTimer?.cancel();
+        changePlayerControlsNotVisible(true);
       },
       onLongPress: () {
         if (BetterPlayerMultipleGestureDetector.of(context) != null) {
@@ -88,6 +131,7 @@ class _BetterPlayerMaterialControlsState extends BetterPlayerControlsState<Bette
             Positioned(top: 0, left: 0, right: 0, child: _buildTopBar()),
             Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomBar()),
             _buildNextVideoWidget(),
+            buildSeekFeedbackWidget(),
           ],
         ),
       ),
@@ -106,6 +150,7 @@ class _BetterPlayerMaterialControlsState extends BetterPlayerControlsState<Bette
     _initTimer?.cancel();
     _showAfterExpandCollapseTimer?.cancel();
     _controlsVisibilityStreamSubscription?.cancel();
+    disposeSeekFeedbackTimer();
   }
 
   @override

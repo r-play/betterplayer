@@ -27,6 +27,7 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
       overflowModalColor: Colors.indigo,
       overflowModalTextColor: Colors.white,
       overflowMenuIconsColor: Colors.white,
+      playerTheme: BetterPlayerTheme.material,
     );
 
     final BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(

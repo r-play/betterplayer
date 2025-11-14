@@ -54,6 +54,7 @@ class BetterPlayerControlsConfiguration {
     this.overflowMenuIconsColor = Colors.black,
     this.forwardSkipTimeInMilliseconds = 10000,
     this.backwardSkipTimeInMilliseconds = 10000,
+    this.enableDoubleTapSeek = true,
     this.loadingColor = Colors.white,
     this.loadingWidget,
     this.backgroundColor = Colors.black,
@@ -229,6 +230,9 @@ class BetterPlayerControlsConfiguration {
 
   ///Time which will be used once user uses backward
   final int backwardSkipTimeInMilliseconds;
+
+  ///Flag used to enable/disable double tap to seek (left half = backward, right half = forward)
+  final bool enableDoubleTapSeek;
 
   ///Color of default loading indicator
   final Color loadingColor;

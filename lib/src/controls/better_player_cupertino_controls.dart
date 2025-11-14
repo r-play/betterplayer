@@ -74,12 +74,18 @@ class _BetterPlayerCupertinoControlsState extends BetterPlayerControlsState<Bett
     final isFullScreen = _betterPlayerController?.isFullScreen ?? false;
 
     _wasLoading = isLoading(_latestValue);
-    final controlsColumn = Column(
+    final controlsStack = Stack(
+      fit: StackFit.expand,
       children: <Widget>[
-        _buildTopBar(backgroundColor, iconColor, barHeight, buttonPadding),
-        if (_wasLoading) Expanded(child: Center(child: _buildLoadingWidget())) else _buildHitArea(),
-        _buildNextVideoWidget(),
-        _buildBottomBar(backgroundColor, iconColor, barHeight),
+        Column(
+          children: <Widget>[
+            _buildTopBar(backgroundColor, iconColor, barHeight, buttonPadding),
+            if (_wasLoading) Expanded(child: Center(child: _buildLoadingWidget())) else _buildHitArea(),
+            _buildNextVideoWidget(),
+            _buildBottomBar(backgroundColor, iconColor, barHeight),
+          ],
+        ),
+        buildSeekFeedbackWidget(),
       ],
     );
     return GestureDetector(
@@ -89,12 +95,54 @@ class _BetterPlayerCupertinoControlsState extends BetterPlayerControlsState<Bett
         }
         controlsNotVisible ? cancelAndRestartTimer() : changePlayerControlsNotVisible(true);
       },
-      onDoubleTap: () {
+      onDoubleTapDown: (TapDownDetails details) {
+        // Check if double tap seek is enabled
+        if (!_controlsConfiguration.enableDoubleTapSeek) {
+          // If disabled, just call parent handler and restart timer only if controls are visible
+          if (BetterPlayerMultipleGestureDetector.of(context) != null) {
+            BetterPlayerMultipleGestureDetector.of(context)!.onDoubleTap?.call();
+          }
+          if (!controlsNotVisible) {
+            cancelAndRestartTimer();
+          }
+          return;
+        }
+
+        if (_betterPlayerController?.isLiveStream() ?? true) {
+          // Don't seek for live streams, restart timer only if controls are visible
+          if (!controlsNotVisible) {
+            cancelAndRestartTimer();
+          }
+          return;
+        }
+
+        // Get screen width to determine left/right half
+        final screenWidth = MediaQuery.of(context).size.width;
+        final tapPosition = details.localPosition.dx;
+
+        // Determine direction and perform seek
+        if (tapPosition < screenWidth / 2) {
+          // Left half - seek backward
+          isSeekingForward = false;
+          skipBack();
+        } else {
+          // Right half - seek forward
+          isSeekingForward = true;
+          skipForward();
+        }
+
+        // Show visual feedback
+        showSeekFeedbackAnimation();
+
+        // Call parent handler if exists
         if (BetterPlayerMultipleGestureDetector.of(context) != null) {
           BetterPlayerMultipleGestureDetector.of(context)!.onDoubleTap?.call();
         }
-        cancelAndRestartTimer();
-        _onPlayPause();
+
+        // Always hide controls after double tap seek to prevent flicker
+        // (skipBack/skipForward calls cancelAndRestartTimer which makes controls visible)
+        _hideTimer?.cancel();
+        changePlayerControlsNotVisible(true);
       },
       onLongPress: () {
         if (BetterPlayerMultipleGestureDetector.of(context) != null) {
@@ -103,7 +151,7 @@ class _BetterPlayerCupertinoControlsState extends BetterPlayerControlsState<Bett
       },
       child: AbsorbPointer(
         absorbing: controlsNotVisible,
-        child: isFullScreen ? SafeArea(child: controlsColumn) : controlsColumn,
+        child: isFullScreen ? SafeArea(child: controlsStack) : controlsStack,
       ),
     );
   }
@@ -120,6 +168,7 @@ class _BetterPlayerCupertinoControlsState extends BetterPlayerControlsState<Bett
     _expandCollapseTimer?.cancel();
     _initTimer?.cancel();
     _controlsVisibilityStreamSubscription?.cancel();
+    disposeSeekFeedbackTimer();
   }
 
   @override

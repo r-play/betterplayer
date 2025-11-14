@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_plus/src/controls/better_player_clickable_widget.dart';
 import 'package:better_player_plus/src/core/better_player_utils.dart';
@@ -19,6 +21,11 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
   VideoPlayerValue? get latestValue;
 
   bool controlsNotVisible = true;
+
+  // Double tap seek feedback
+  bool showSeekFeedback = false;
+  bool isSeekingForward = true;
+  Timer? seekFeedbackTimer;
 
   void cancelAndRestartTimer();
 
@@ -434,6 +441,47 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
   ///right directionality.
   Widget buildLTRDirectionality(Widget child) => Directionality(textDirection: TextDirection.ltr, child: child);
 
+  ///Shows seek feedback animation
+  void showSeekFeedbackAnimation() {
+    setState(() {
+      showSeekFeedback = true;
+    });
+
+    seekFeedbackTimer?.cancel();
+    seekFeedbackTimer = Timer(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() {
+          showSeekFeedback = false;
+        });
+      }
+    });
+  }
+
+  ///Builds seek feedback widget
+  Widget buildSeekFeedbackWidget() {
+    // if (!showSeekFeedback) {
+    //   return const SizedBox();
+    // }
+
+    final seekTime = isSeekingForward
+        ? betterPlayerControlsConfiguration.forwardSkipTimeInMilliseconds
+        : betterPlayerControlsConfiguration.backwardSkipTimeInMilliseconds;
+    final seekSeconds = (seekTime / 1000).round();
+
+    return IgnorePointer(
+      child: AnimatedOpacity(
+        opacity: showSeekFeedback ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 200),
+        child: _SeekFeedback(isSeekingForward: isSeekingForward, seekSeconds: seekSeconds),
+      ),
+    );
+  }
+
+  ///Disposes seek feedback timer (call this in subclass dispose)
+  void disposeSeekFeedbackTimer() {
+    seekFeedbackTimer?.cancel();
+  }
+
   ///Called when player controls visibility should be changed.
   void changePlayerControlsNotVisible(bool notVisible) {
     setState(() {
@@ -444,5 +492,74 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget> extends State
       }
       controlsNotVisible = notVisible;
     });
+  }
+}
+
+class _SeekFeedback extends StatefulWidget {
+  const _SeekFeedback({required this.isSeekingForward, required this.seekSeconds});
+
+  final bool isSeekingForward;
+  final int seekSeconds;
+
+  @override
+  State<_SeekFeedback> createState() => _SeekFeedbackState();
+}
+
+class _SeekFeedbackState extends State<_SeekFeedback> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Create animation controller that slides in one direction
+    _animationController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this)..forward();
+
+    // Create slide animation based on direction
+    // Forward: arrow slides to the right, Backward: arrow slides to the left
+    final targetOffset = widget.isSeekingForward ? const Offset(0.5, 0) : const Offset(-0.5, 0);
+    _slideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: targetOffset,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: widget.isSeekingForward ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.7), borderRadius: BorderRadius.circular(24)),
+        child: Row(
+          spacing: 8,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!widget.isSeekingForward)
+              SlideTransition(
+                position: _slideAnimation,
+                child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white, size: 16),
+              ),
+            Text(
+              '${widget.isSeekingForward ? '+' : '-'} ${widget.seekSeconds}',
+              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            if (widget.isSeekingForward)
+              SlideTransition(
+                position: _slideAnimation,
+                child: const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white, size: 16),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
