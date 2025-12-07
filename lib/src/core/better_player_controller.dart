@@ -715,7 +715,12 @@ class BetterPlayerController {
       _postEvent(
         BetterPlayerEvent(
           BetterPlayerEventType.exception,
-          parameters: <String, dynamic>{'exception': currentVideoPlayerValue.errorDescription},
+          parameters: <String, dynamic>{
+            'exception': currentVideoPlayerValue.errorDescription,
+            'errorMessage': currentVideoPlayerValue.errorMessage,
+            'errorCode': currentVideoPlayerValue.errorCode,
+            'errorCodeName': currentVideoPlayerValue.errorCodeName,
+          },
         ),
       );
     }

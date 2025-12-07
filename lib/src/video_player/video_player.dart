@@ -5,6 +5,7 @@
 // Dart imports:
 import 'dart:async';
 import 'dart:io';
+
 import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
 import 'package:better_player_plus/src/video_player/video_player_platform_interface.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ class VideoPlayerValue {
     this.volume = 1.0,
     this.speed = 1.0,
     this.errorDescription,
+    this.errorCode,
+    this.errorCodeName,
+    this.errorMessage,
     this.isPip = false,
   });
 
@@ -78,6 +82,10 @@ class VideoPlayerValue {
   /// If [hasError] is false this is [null].
   final String? errorDescription;
 
+  final String? errorMessage;
+  final int? errorCode;
+  final String? errorCodeName;
+
   /// The [size] of the currently loaded video.
   ///
   /// Is null when [initialized] is false.
@@ -119,6 +127,9 @@ class VideoPlayerValue {
     bool? isBuffering,
     double? volume,
     String? errorDescription,
+    String? errorMessage,
+    int? errorCode,
+    String? errorCodeName,
     double? speed,
     bool? isPip,
   }) => VideoPlayerValue(
@@ -133,6 +144,9 @@ class VideoPlayerValue {
     volume: volume ?? this.volume,
     speed: speed ?? this.speed,
     errorDescription: errorDescription ?? this.errorDescription,
+    errorMessage: errorMessage ?? this.errorMessage,
+    errorCode: errorCode ?? this.errorCode,
+    errorCodeName: errorCodeName ?? this.errorCodeName,
     isPip: isPip ?? this.isPip,
   );
 
@@ -149,7 +163,10 @@ class VideoPlayerValue {
         'isLooping: $isLooping, '
         'isBuffering: $isBuffering, '
         'volume: $volume, '
-        'errorDescription: $errorDescription)';
+        'errorDescription: $errorDescription, '
+        'errorMessage: $errorMessage, '
+        'errorCode: $errorCode, '
+        'errorCodeName: $errorCodeName)';
   }
 }
 
@@ -239,11 +256,32 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     }
 
     void errorListener(Object object) {
-      if (object is PlatformException) {
-        final PlatformException e = object;
-        value = value.copyWith(errorDescription: e.message);
+      // 공통 후처리 전에 value만 먼저 정리
+      if (object is! PlatformException) {
+        value = value.copyWith(errorDescription: object.toString());
       } else {
-        value.copyWith(errorDescription: object.toString());
+        final message = object.message;
+        final details = object.details;
+
+        if (details is String) {
+          // 단순 문자열일 땐 기존 로직 유지
+          value = value.copyWith(errorDescription: message);
+        } else if (details is Map) {
+          // Map 형태일 때만 안전하게 꺼내기
+          final String? errorMessage = details['message'] as String?;
+          final int? errorCode = details['errorCode'] as int?;
+          final String? errorCodeName = details['errorCodeName'] as String?;
+
+          value = value.copyWith(
+            errorDescription: message,
+            errorMessage: errorMessage,
+            errorCode: errorCode,
+            errorCodeName: errorCodeName,
+          );
+        } else {
+          // 예상치 못한 타입이면 message만
+          value = value.copyWith(errorDescription: message);
+        }
       }
       _timer?.cancel();
       if (!_initializingCompleter.isCompleted) {
