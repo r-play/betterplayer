@@ -151,12 +151,16 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
                     } else {
                         tempImage = UIImage(contentsOfFile: imageUrl)
                     }
-                    if let image = tempImage {
-                        let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
-                        self.artworkImageDict[key] = artwork
-                        nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        var updatedNowPlayingInfo = nowPlayingInfo
+                        if let image = tempImage {
+                            let artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+                            self.artworkImageDict[key] = artwork
+                            updatedNowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                        }
+                        MPNowPlayingInfoCenter.default().nowPlayingInfo = updatedNowPlayingInfo
                     }
-                    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
                 }
             }
         } else {
