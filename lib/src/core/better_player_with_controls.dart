@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 
 class BetterPlayerWithControls extends StatefulWidget {
   const BetterPlayerWithControls({super.key, this.controller});
+
   final BetterPlayerController? controller;
 
   @override
@@ -28,7 +29,7 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
 
   bool _initialized = false;
 
-  StreamSubscription? _controllerEventSubscription;
+  StreamSubscription<BetterPlayerControllerEvent>? _controllerEventSubscription;
 
   @override
   void initState() {
@@ -151,7 +152,11 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
       }
 
       if (controlsConfiguration.customControlsBuilder != null && playerTheme == BetterPlayerTheme.custom) {
-        return controlsConfiguration.customControlsBuilder!(betterPlayerController, onControlsVisibilityChanged);
+        return controlsConfiguration.customControlsBuilder!(
+          betterPlayerController,
+          onControlsVisibilityChanged,
+          controlsConfiguration,
+        );
       } else if (playerTheme == BetterPlayerTheme.material) {
         return _buildMaterialControl();
       } else if (playerTheme == BetterPlayerTheme.cupertino) {
@@ -197,7 +202,7 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
 
   bool _started = false;
 
-  StreamSubscription? _controllerEventSubscription;
+  StreamSubscription<BetterPlayerControllerEvent>? _controllerEventSubscription;
 
   @override
   void initState() {
@@ -266,9 +271,7 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
       }
       return Center(
         child: ClipRect(
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
+          child: SizedBox.expand(
             child: FittedBox(
               fit: widget.boxFit,
               child: SizedBox(
