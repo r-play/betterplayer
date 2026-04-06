@@ -397,11 +397,11 @@ internal class BetterPlayer(
         mediaItemBuilder.setUri(uri)
         mediaItemBuilder.setLiveConfiguration(
             MediaItem.LiveConfiguration.Builder()
-                .setTargetOffsetMs(500L)
-                .setMinOffsetMs(100L)
-                .setMaxOffsetMs(2000L)
+                .setTargetOffsetMs(15000L)
+                .setMinOffsetMs(5000L)
+                .setMaxOffsetMs(25000L)
                 .setMinPlaybackSpeed(0.9f)
-                .setMaxPlaybackSpeed(1.1f)
+                .setMaxPlaybackSpeed(1.2f)
                 .build()
         )
         if (!cacheKey.isNullOrEmpty()) {
