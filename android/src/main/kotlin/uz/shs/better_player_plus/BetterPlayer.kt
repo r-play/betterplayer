@@ -793,6 +793,12 @@ internal class BetterPlayer(
         return result
     }
 
+    fun getPlayer(): ExoPlayer? = exoPlayer
+
+    fun reattachSurface() {
+        exoPlayer?.setVideoSurface(surface)
+    }
+
     companion object {
         private const val TAG = "BetterPlayer"
         private const val FORMAT_SS = "ss"

@@ -6,6 +6,8 @@ import UIKit
 import MediaPlayer
 
 public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformViewFactory {
+    @objc public private(set) static var instance: SwiftBetterPlayerPlugin?
+
     private let messenger: FlutterBinaryMessenger
     private var players: [Int64: BetterPlayer] = [:]
     private let registrar: FlutterPluginRegistrar
@@ -28,9 +30,10 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
 
     @objc public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "better_player_channel", binaryMessenger: registrar.messenger())
-        let instance = SwiftBetterPlayerPlugin(registrar: registrar)
-        registrar.addMethodCallDelegate(instance, channel: channel)
-        registrar.register(instance, withId: "com.jhomlala/better_player")
+        let pluginInstance = SwiftBetterPlayerPlugin(registrar: registrar)
+        Self.instance = pluginInstance
+        registrar.addMethodCallDelegate(pluginInstance, channel: channel)
+        registrar.register(pluginInstance, withId: "com.jhomlala/better_player")
     }
 
     public func createArgsCodec() -> (FlutterMessageCodec & NSObjectProtocol) { FlutterStandardMessageCodec.sharedInstance() }
@@ -40,6 +43,10 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
             return BetterPlayer()
         }
         return player
+    }
+
+    @objc public func getActivePlayer() -> BetterPlayer? {
+        return players.values.first(where: { $0.player.rate > 0 }) ?? Array(players.values).last
     }
 
     private func newTextureId() -> Int64 {

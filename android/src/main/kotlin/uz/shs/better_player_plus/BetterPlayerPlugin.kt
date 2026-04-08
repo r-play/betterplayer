@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.LongSparseArray
 import android.util.Rational
 import androidx.annotation.OptIn
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import uz.shs.better_player_plus.BetterPlayerCache.releaseCache
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -128,6 +129,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                     customDefaultLoadControl, result
                 )
                 videoPlayers.put(handle.id(), player)
+                instance = this
             }
 
             PRE_CACHE_METHOD -> preCache(call, result)
@@ -486,6 +488,19 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         stopPipHandler()
     }
 
+    fun getActiveExoPlayer(): Player? {
+        if (videoPlayers.size() > 0) {
+            return videoPlayers.valueAt(videoPlayers.size() - 1).getPlayer()
+        }
+        return null
+    }
+
+    fun reattachActivePlayerSurface() {
+        if (videoPlayers.size() > 0) {
+            videoPlayers.valueAt(videoPlayers.size() - 1).reattachSurface()
+        }
+    }
+
     private fun stopPipHandler() {
         if (pipHandler != null) {
             pipHandler!!.removeCallbacksAndMessages(null)
@@ -522,6 +537,9 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     companion object {
+        @JvmStatic
+        var instance: BetterPlayerPlugin? = null
+
         private const val TAG = "BetterPlayerPlugin"
         private const val CHANNEL = "better_player_channel"
         private const val EVENTS_CHANNEL = "better_player_channel/videoEvents"
